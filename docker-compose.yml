@@ -1,0 +1,133 @@
+version: '3.8'
+
+services:
+  # ===========================================
+  # BASE DE DONNEES MARIADB
+  # ===========================================
+  mariadb:
+    image: mariadb:10.11
+    container_name: wow-mariadb
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: [VOTRE_MOT_DE_PASSE_ROOT]
+      MYSQL_DATABASE: datamart-wow
+      MYSQL_USER: scrapper
+      MYSQL_PASSWORD: [VOTRE_MOT_DE_PASSE_SCRAPPER]
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./app/init_db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "3306:3306"
+    networks:
+      - wow-network
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+  # ===========================================
+  # SCRAPER PYTHON (WarcraftLogs API)
+  # ===========================================
+  scraper:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: wow-scraper
+    restart: "no"
+    environment:
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_USER: scrapper
+      DB_PASSWORD: [VOTRE_MOT_DE_PASSE_SCRAPPER]
+      DB_NAME: datamart-wow
+      WCL_CLIENT_ID: [VOTRE_WCL_CLIENT_ID]
+      WCL_CLIENT_SECRET: [VOTRE_WCL_CLIENT_SECRET]
+    volumes:
+      - scraper_logs:/app/logs
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    networks:
+      - wow-network
+    command: ["python", "run_all.py"]
+
+  # ===========================================
+  # SQL EXPORTER (MariaDB -> Prometheus)
+  # ===========================================
+  sql-exporter:
+    image: burningalchemist/sql_exporter:latest
+    container_name: wow-sql-exporter
+    restart: unless-stopped
+    ports:
+      - "9399:9399"
+    volumes:
+      - ./sql-exporter/sql_exporter.yml:/etc/sql_exporter/sql_exporter.yml:ro
+    command:
+      - "--config.file=/etc/sql_exporter/sql_exporter.yml"
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    networks:
+      - wow-network
+
+  # ===========================================
+  # PROMETHEUS (Collecte des metriques)
+  # ===========================================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: wow-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.enable-lifecycle'
+    depends_on:
+      - sql-exporter
+    networks:
+      - wow-network
+
+  # ===========================================
+  # GRAFANA (Visualisation)
+  # ===========================================
+  grafana:
+    image: grafana/grafana:latest
+    container_name: wow-grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+    depends_on:
+      - prometheus
+    networks:
+      - wow-network
+
+# ===========================================
+# VOLUMES PERSISTANTS
+# ===========================================
+volumes:
+  mariadb_data:
+  prometheus_data:
+  grafana_data:
+  scraper_logs:
+
+# ===========================================
+# RESEAU INTERNE
+# ===========================================
+networks:
+  wow-network:
+    driver: bridge

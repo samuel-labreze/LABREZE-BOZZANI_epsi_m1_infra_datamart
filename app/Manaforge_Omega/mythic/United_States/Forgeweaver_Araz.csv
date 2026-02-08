@@ -1,0 +1,101 @@
+rank,name,class,spec,hero_spec,amount,duration,ilvl,server,guild,trinket_1,trinket_2,report,fight_id
+1,Aerr,Warlock,Destruction,Diabolist,10950815.414217,254142,729,Zul'jin,Unrivaled,Diamantine Voidcore,Azhiccaran Parapodia,VMyDrZxfNLwpRaPA,26
+2,Magnit,Warlock,Destruction,Diabolist,10786730.412402,231958,729,Area 52,Fun Detected,Astral Antenna,Diamantine Voidcore,mWb8V6HXpZjvyJRc,28
+3,Colespriest,Mage,Arcane,Spellslinger,10617985.727146,253278,729,Area 52,Pool Noodle Pirates,Azhiccaran Parapodia,Diamantine Voidcore,h7Q4Jzq3P6c9gmFR,52
+4,Odbabymage,Mage,Arcane,Spellslinger,10555134.916352,255714,729,Emerald Dream,Nascent Team 8,Azhiccaran Parapodia,Diamantine Voidcore,HfgQMdwKj6TkZRJ7,50
+5,Quercustab,Rogue,Subtlety,Deathstalker,10506958.337606,243817,729,Area 52,Children,Araz's Ritual Forge,Unyielding Netherprism,bgLkaDB6mNv3KJFt,50
+6,Khanbust,Mage,Arcane,Spellslinger,10492929.095433,248362,729,Illidan,Dead On My Screen,Diamantine Voidcore,Astral Antenna,L7xcXmMfyANz1QtC,32
+7,Robozo,Priest,Shadow,Archon,10454993.948873,409180,729,Area 52,Mid,Araz's Ritual Forge,Diamantine Voidcore,TGCFdzA3X8Kqg1Rj,41
+8,Dianox,Priest,Shadow,Archon,10408779.622192,231811,729,Area 52,Fun Detected,Diamantine Voidcore,Araz's Ritual Forge,82vMd4kbYPzJmAgH,62
+9,Recruitie,Druid,Balance,Tiger Thwap! (Unknown),10347071.600293,248742,729,Illidan,Shade,Diamantine Voidcore,Araz's Ritual Forge,yjth9LJRGXQxHrZ3,23
+10,Mishay,Hunter,Marksmanship,Dark Ranger,10343950.56903,252008,729,Illidan,,Astral Antenna,Unyielding Netherprism,vcQd3MJZrtV8WKhz,26
+11,Ukiyoace,Warlock,Destruction,Diabolist,10288785.113461,320155,728,Illidan,,Diamantine Voidcore,Astral Antenna,XMJvWK9NDmctV7bA,33
+12,Fiskieslip,Shaman,Elemental,,10274152.908068,255840,729,Area 52,Leviathan - Kraken,Araz's Ritual Forge,Diamantine Voidcore,9ZwJFK1cG8Qjf4vB,22
+13,Eppzy,Mage,Arcane,Spellslinger,10261037.257359,268967,729,Frostmourne,Crimson,Azhiccaran Parapodia,Diamantine Voidcore,n6cR2FyCJbrZjGKN,19
+14,Tacofajita,Warlock,Destruction,Diabolist,10251030.532749,247734,729,Kil'jaeden,grr woof woof bark,Azhiccaran Parapodia,Diamantine Voidcore,L6znTwGxYyhFKmZN,22
+15,Bryon,Warlock,Destruction,Hellcaller,10228886.425085,172723,729,Frostmourne,Honestly,Diamantine Voidcore,Azhiccaran Parapodia,2VtyDR4CF6PGLjbd,42
+16,Babybrian,Warlock,Destruction,Diabolist,10218163.139669,246905,728,Zul'jin,Idiot,Diamantine Voidcore,Azhiccaran Parapodia,3fyTtNY49zkWJFjX,52
+17,Liasia,Priest,Shadow,Archon,10205483.324675,415764,729,Illidan,Intent,Araz's Ritual Forge,Diamantine Voidcore,vW4cZL6tm1VpJRQP,27
+18,Zorthargirl,Shaman,Elemental,,10192170.520422,272894,729,Frostmourne,Honestly,Astral Antenna,Araz's Ritual Forge,z72yR6Wv3AV8fB1Q,28
+19,Fish,Priest,Shadow,Archon,10163831.743858,251236,729,Kul Tiras,Mid Team,Araz's Ritual Forge,Diamantine Voidcore,TGMCbX1ytaPVZmg7,36
+20,Threefatez,Warlock,Destruction,Diabolist,10138304.2697,277701,729,Area 52,Dsylxeic,Astral Antenna,Diamantine Voidcore,zQPFbWXZ9k8Bwtvj,26
+21,Æäc,DeathKnight,Frost,Rider of the Apocalypse,10132545.786584,281731,729,Illidan,Trust me DUde,Unyielding Netherprism,Araz's Ritual Forge,vNKVb1ypQAk69nmD,23
+22,Beilce,Warlock,Destruction,Diabolist,10115276.603428,243681,728,Area 52,fish zoo,Diamantine Voidcore,Azhiccaran Parapodia,XhDxA3aC8cvkVFmq,31
+23,Evooki,Evoker,Devastation,Scalecommander,10094155.49436,268357,729,Tichondrius,Blur,Diamantine Voidcore,Araz's Ritual Forge,q9znfwFYXMWZQ3pG,23
+24,Shazmo,Priest,Shadow,Archon,10053959.967268,312844,729,Tichondrius,Nineteen Reasons Why,Araz's Ritual Forge,Diamantine Voidcore,pGPKd9abzDMr8c3t,27
+25,Cheekgripper,DeathKnight,Frost,Rider of the Apocalypse,10050545.674289,261876,729,Area 52,Consequence,Astral Antenna,Unyielding Netherprism,hZXnk4qgDj3xBMpL,27
+26,Finesthour,DeathKnight,Unholy,Rider of the Apocalypse,10039853.754941,254012,729,Icecrown,Vindicatum,Unyielding Netherprism,Astral Antenna,KdDbJCfmTMhW4QXy,22
+27,Quickquaker,Shaman,Elemental,,10039162.336765,260514,729,Bleeding Hollow,Tabbed Out - Weekday,Diamantine Voidcore,Araz's Ritual Forge,RHnKQNfrYF1MGXkJ,27
+28,Delliele,Shaman,Elemental,,10032128.073048,259555,729,Thrall,Speak,Araz's Ritual Forge,Diamantine Voidcore,bMHdL86JP7w93mpT,49
+29,Anonymous,DeathKnight,Frost,Rider of the Apocalypse,10028666.657772,262337,729,,,Unyielding Netherprism,Astral Antenna,a:z24JcYMHb8Wt7pPQ,74
+30,Obligation,Warlock,Destruction,Diabolist,10011056.70446,270596,729,Area 52,Retirement,Diamantine Voidcore,Azhiccaran Parapodia,rKa7GyRbJVpfnZWg,22
+31,Kickdk,DeathKnight,Frost,Rider of the Apocalypse,10005127.115173,268536,729,Sargeras,Pool Noodle Pirates,Astral Antenna,Unyielding Netherprism,mXv4cMJxNq9tfkCH,26
+32,Soulsad,Warlock,Destruction,Diabolist,10004646.567213,244335,729,Zul'jin,Shade,Azhiccaran Parapodia,Diamantine Voidcore,YN7ybkfAw9R2xZtP,24
+33,Dezyra,Mage,Arcane,Spellslinger,9998001.6810438,262337,729,Illidan,,Diamantine Voidcore,Astral Antenna,8Nt2FCZHQPrDxG7W,74
+34,Catfishcraig,Shaman,Elemental,,9987411.0651102,259898,729,Mal'Ganis,Pathogen,Diamantine Voidcore,Araz's Ritual Forge,x9hy3Dk7Wnaq2rCQ,26
+35,Palsham,Shaman,Elemental,,9966824.7258834,255457,729,Frostmourne,Barbershop Quartet,Astral Antenna,Araz's Ritual Forge,ny4pg8WPCXafKQD2,31
+36,Zroed,Warlock,Destruction,Diabolist,9957468.9551605,254374,729,Illidan,Midnights,Diamantine Voidcore,Astral Antenna,GmWHrTzpvPabtDAX,25
+37,Ironlockedin,Warlock,Destruction,Hellcaller,9952386.2502823,270071,729,Proudmoore,FlamingUnicornTaxEvasion,Diamantine Voidcore,Azhiccaran Parapodia,2NJVcTpk64L1dxKP,25
+38,Tactìle,Rogue,Subtlety,Fatebound,9948595.2510225,193389,729,Illidan,Wing It,Unyielding Netherprism,Araz's Ritual Forge,4vjyC6Bd9xzMZbFf,30
+39,Dazbekzul,Priest,Shadow,Archon,9928446.3396594,332592,729,Zul'jin,Raiding Rainbows,Araz's Ritual Forge,Astral Antenna,PxHnGWNZcAhkqYf6,38
+40,Pasteurise,Shaman,Elemental,,9923214.2925115,262711,729,Illidan,Consequence,Diamantine Voidcore,Araz's Ritual Forge,LJvjQHbDrByY3wW2,28
+41,Yxm,Mage,Arcane,Spellslinger,9912930.7960145,249003,729,Tichondrius,Nerd Rage,Diamantine Voidcore,Astral Antenna,mGQn8jJWTz9X7Lgq,19
+42,Giantjunk,DeathKnight,Frost,Rider of the Apocalypse,9911712.5301133,336230,729,Dalaran,Ultra Instinct,Unyielding Netherprism,Astral Antenna,A6XwzxRQgMZar3hp,22
+43,Bigvinegar,Warlock,Destruction,Diabolist,9908985.4160559,266046,729,Frostmourne,Myth,Diamantine Voidcore,Azhiccaran Parapodia,NM8n3QCdfPY6km9Z,7
+44,Booze,Shaman,Elemental,,9907163.5523432,248208,729,Frostmourne,Entropy,Diamantine Voidcore,Araz's Ritual Forge,JyVqkCjhwdnQpFmr,25
+45,Nivoxe,Warlock,Destruction,Hellcaller,9905480.1725586,279789,728,Stormrage,Kumquat,Diamantine Voidcore,Azhiccaran Parapodia,AWbv7rFd43YCBhzX,24
+46,Chickenism,Druid,Balance,Tiger Thwap! (Unknown),9904491.8306362,243287,729,Icecrown,Vindicatum,Araz's Ritual Forge,Diamantine Voidcore,8GY2Q4adBPyANMkc,39
+47,Friendlyando,Warlock,Destruction,Diabolist,9892713.6624989,328710,728,Frostmourne,Bit Like Immortalis,Astral Antenna,Diamantine Voidcore,6ZXd94KHNQ3kgGBw,27
+48,Jashmaster,Warlock,Destruction,Hellcaller,9877779.4497343,268016,729,Thrall,Availed,Diamantine Voidcore,Astral Antenna,DRZYn9aWCvd24Lg1,27
+49,Snowgigarat,Priest,Shadow,Archon,9876925.8203687,267715,729,Stormrage,SOMA,Diamantine Voidcore,Araz's Ritual Forge,pTKJmfvYZkh4AH7F,15
+50,Electricrat,Shaman,Elemental,,9871380.7725562,257923,729,Thrall,Say No More,Araz's Ritual Forge,Diamantine Voidcore,PmzCakDrJg27fWTq,36
+51,Lowercaseg,Warlock,Destruction,Diabolist,9868018.0632655,181584,729,Frostmourne,Honestly,Azhiccaran Parapodia,Diamantine Voidcore,Fa9jnQw318YRxNWf,28
+52,Beastsong,Hunter,Marksmanship,Dark Ranger,9860892.0567078,262045,729,Illidan,Style,Unyielding Netherprism,Astral Antenna,WjmcVt73hYAXRCDJ,31
+53,Pallock,Warlock,Destruction,Diabolist,9857821.3864645,252758,729,Mal'Ganis,Slurp Squad,Azhiccaran Parapodia,Diamantine Voidcore,MjxmAB8k1TpqWyNY,44
+54,Hungnuts,Shaman,Elemental,,9857226.4357445,254920,729,Sargeras,comma,Diamantine Voidcore,Araz's Ritual Forge,8tnXPLZM7Q2hkxGw,16
+55,Vildk,DeathKnight,Frost,Rider of the Apocalypse,9851732.6011757,264515,729,Area 52,Infinity,Astral Antenna,Unyielding Netherprism,AcC1qkha8y9KWRjw,11
+56,Warklaw,Priest,Shadow,Archon,9850843.5259713,256803,729,Frostmourne,Honestly,Araz's Ritual Forge,Diamantine Voidcore,Vc7fLvCmnhbQaktD,21
+57,Valyphar,Warlock,Destruction,Diabolist,9847345.6517953,235419,729,Illidan,Vibrant,Astral Antenna,Diamantine Voidcore,CpZn2cARTkPQDxMb,45
+58,Drekava,Warlock,Destruction,Diabolist,9846286.6200143,273655,729,Thrall,Unrivaled,Azhiccaran Parapodia,Diamantine Voidcore,WK2rLxj6BzFTZyVn,30
+59,Eonjr,Warlock,Destruction,Hellcaller,9845495.3566928,283311,729,Frostmourne,Scuffed,Diamantine Voidcore,Azhiccaran Parapodia,zRAtWcrCbk8JnPg7,34
+60,Anonymous,Warlock,Destruction,Diabolist,9842951.1335504,327996,729,,,Diamantine Voidcore,Azhiccaran Parapodia,a:hcd48GwLNjRg6ZFy,14
+61,Inukaiatsuhi,Warlock,Destruction,Diabolist,9842800.1828435,247206,729,Illidan,,Astral Antenna,Diamantine Voidcore,KLq8V2hDkFntWm9v,28
+62,Madthelock,Warlock,Destruction,Diabolist,9840699.1712625,269808,729,Bleeding Hollow,Fierce,Azhiccaran Parapodia,Diamantine Voidcore,6j8pyPK3mFgJqfCN,14
+63,Atomicrednax,Hunter,Marksmanship,Dark Ranger,9839367.5088325,243420,729,Shattered Hand,Shots Fired,Unyielding Netherprism,Astral Antenna,KDHhxwayYJTvZVCA,14
+64,Vassilis,DeathKnight,Frost,Rider of the Apocalypse,9838023.3276453,256091,729,Thrall,Pool Noodle Pirates,Astral Antenna,Unyielding Netherprism,GndkFYCRvQfWjZmg,23
+65,Garronan,Hunter,BeastMastery,Dark Ranger,9834943.2802162,235015,729,Icecrown,Vindicatum,Araz's Ritual Forge,Unyielding Netherprism,LkDaj41vbFT7VgZf,34
+66,Soultwo,Warlock,Destruction,Diabolist,9828773.3754258,272733,729,Illidan,Shade,Diamantine Voidcore,Astral Antenna,MWwVKATa4FhCZGqc,5
+67,Candyfree,Warlock,Destruction,Diabolist,9824533.1853785,253681,729,Illidan,Nirvana Reborn,Azhiccaran Parapodia,Diamantine Voidcore,XrZvy2dgV94wYcHn,32
+68,Elerra,Warlock,Destruction,Diabolist,9822550.0883054,240076,729,Sargeras,Muscle Memory,Diamantine Voidcore,Azhiccaran Parapodia,Q37cLxk2VbpABPNR,46
+69,Musc,DeathKnight,Frost,Rider of the Apocalypse,9819404.3463547,248208,729,Frostmourne,Entropy,Astral Antenna,Unyielding Netherprism,JyVqkCjhwdnQpFmr,25
+70,Loyalxdice,Priest,Shadow,Archon,9819301.079854,239199,729,Zul'jin,Refined,Araz's Ritual Forge,Diamantine Voidcore,HhvAGmCrFJWy8qVf,22
+71,Kmxdks,DeathKnight,Frost,Rider of the Apocalypse,9814332.8554241,260161,729,Area 52,Artistic,Unyielding Netherprism,Astral Antenna,aXnRgFrATpbJhkjz,34
+72,Eggkid,Warlock,Destruction,Diabolist,9797274.7259196,272639,729,Frostmourne,Esprit,Astral Antenna,Diamantine Voidcore,ajRgx8FzNJq973MQ,30
+73,Padflash,Mage,Fire,Spellslinger,9793507.7783503,172723,729,Frostmourne,Honestly,Diamantine Voidcore,Azhiccaran Parapodia,2VtyDR4CF6PGLjbd,42
+74,Içedøut,Mage,Arcane,Spellslinger,9792762.2865123,256338,729,Mal'Ganis,Raging Time,Astral Antenna,Diamantine Voidcore,jhwtbAYrGaBH3md6,18
+75,Dumpsackyeet,Warlock,Destruction,Diabolist,9790209.4127824,245071,729,Area 52,No Kick Birds,Diamantine Voidcore,Azhiccaran Parapodia,BAY7Gxjw3cND8zp1,26
+76,Jroofat,Warlock,Destruction,Hellcaller,9785928.1617221,247041,729,Illidan,vodka,Diamantine Voidcore,Azhiccaran Parapodia,dbRm9K1hc4PDyp2B,21
+77,Warzmir,Warlock,Destruction,Diabolist,9781547.0928582,260634,729,Illidan,,Astral Antenna,Diamantine Voidcore,aXhBq7QTZ3W4FRjm,28
+78,Sammaele,Warlock,Destruction,Diabolist,9779471.937011,279033,729,Illidan,Last Exile,Astral Antenna,Diamantine Voidcore,pJf4R8vhGYkLWVMb,5
+79,Nozomra,Warlock,Destruction,Diabolist,9769575.1610368,395717,729,Illidan,Acheron,Astral Antenna,Azhiccaran Parapodia,QrkNZAyGVmMgPtn2,28
+80,Critpriest,Priest,Shadow,Archon,9768848.6609018,245277,729,Frostmourne,TBD,Araz's Ritual Forge,Diamantine Voidcore,fKanW1NyY3HMx4AZ,28
+81,Rayywl,Warlock,Destruction,Hellcaller,9763761.2886094,274901,729,Illidan,Refined,Azhiccaran Parapodia,Diamantine Voidcore,HypAM6Dan7BRCZjJ,29
+82,Apexdk,DeathKnight,Frost,Rider of the Apocalypse,9763647.6289607,237301,729,Mal'Ganis,Pathogen,Unyielding Netherprism,Astral Antenna,NQRcaCz98PwMVLbK,32
+83,Evaalice,Priest,Shadow,Archon,9761948.7363367,397416,729,Stormrage,SMH,Astral Antenna,Araz's Ritual Forge,4fMjkzNx8dLht7vK,28
+84,Koreth,Rogue,Subtlety,Deathstalker,9761281.278397,264112,729,Stonemaul,Euphoric,Unyielding Netherprism,Astral Antenna,BVhRjJNqa4vMfkgD,33
+85,Laxsair,DeathKnight,Frost,Rider of the Apocalypse,9750555.4838375,269574,729,Mal'Ganis,Awakeníng,Astral Antenna,Unyielding Netherprism,TV63MFxH2RqXBnCf,20
+86,Divinew,Warlock,Destruction,Diabolist,9748576.7812696,247085,728,Frostmourne,Odyssey,Astral Antenna,Diamantine Voidcore,JRDjxyhmQPCTBdtN,25
+87,Zhegefans,Warlock,Destruction,Diabolist,9746684.5081652,351185,729,Illidan,,Diamantine Voidcore,Astral Antenna,VFX6hPTrgn9yjqaN,31
+88,Babybrain,Warlock,Destruction,Diabolist,9746240.543841,251397,729,Area 52,Idiot,Azhiccaran Parapodia,Diamantine Voidcore,mCZjXcRDWdLFPApk,23
+89,Yungseamen,Warlock,Destruction,Diabolist,9740981.6211103,260081,729,Illidan,Hollowed,Diamantine Voidcore,Azhiccaran Parapodia,zt9BTqkZQgwym34J,28
+90,Gayprint,Rogue,Subtlety,Deathstalker,9733085.9018107,252614,729,Frostmourne,Honestly,Araz's Ritual Forge,Unyielding Netherprism,YQK9f7nZgmb4TtMz,11
+91,Tjsalce,Shaman,Elemental,,9732337.5804867,256564,729,Tichondrius,check the tapes,Araz's Ritual Forge,Diamantine Voidcore,xmZ8MFXftNpWVYKP,49
+92,Cerenyn,Priest,Shadow,Archon,9730408.2948837,234289,729,Frostmourne,Copium,Diamantine Voidcore,Araz's Ritual Forge,rCKB2vcTnGLjZfYH,27
+93,Mcmuffnz,Warlock,Destruction,Diabolist,9729136.9109252,319675,728,Hyjal,Shade,Diamantine Voidcore,Azhiccaran Parapodia,h9rCyd2GcPZpb6xM,5
+94,Cynflation,Evoker,Augmentation,Scalecommander,9707745.9135489,253276,727,Illidan,Warpath,Araz's Ritual Forge,Diamantine Voidcore,3vdpcghkCqzV2TwF,23
+95,Mayoiuta,DeathKnight,Frost,Rider of the Apocalypse,9706131.6226238,324154,729,Illidan,Squirrel Squad HOF,Astral Antenna,Unyielding Netherprism,63pCcV9mv2MDbdY8,22
+96,Eggshiron,DeathKnight,Frost,Rider of the Apocalypse,9706005.5335466,251918,729,Area 52,,Unyielding Netherprism,Astral Antenna,mWMF1qzPpLJhHKgV,23
+97,Dreamx,Mage,Arcane,Spellslinger,9705428.2493217,261670,729,Illidan,Shade,Diamantine Voidcore,Astral Antenna,ktYHzZxW3rq6jcKf,25
+98,Dhavek,Warlock,Destruction,Diabolist,9704973.1582197,257509,729,Tichondrius,no keybinds,Diamantine Voidcore,Azhiccaran Parapodia,3azCDrchqBdxWP2Q,26
+99,Beaverblast,Mage,Arcane,Spellslinger,9702205.5159918,238434,729,Mal'Ganis,Muscle Memory,Diamantine Voidcore,Astral Antenna,vZJ7h3X6gRzkK8HY,26
+100,Unulwist,Mage,Arcane,Spellslinger,9701964.4578073,251110,729,Illidan,Midnights,Azhiccaran Parapodia,Diamantine Voidcore,dZTgHRt2aXzhDmF1,24

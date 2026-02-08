@@ -1,0 +1,15 @@
+# ===========================================
+# WoW Mythic Raid Scraper - Dependencies
+# ===========================================
+
+# HTTP Client
+requests>=2.31.0
+
+# Database
+PyMySQL>=1.1.0
+
+# Configuration
+PyYAML>=6.0.1
+
+# Utilities
+python-dateutil>=2.8.2

@@ -1,0 +1,463 @@
+global:
+  scrape_timeout: 30s
+  min_interval: 60s
+
+target:
+  data_source_name: "mysql://scrapper:[VOTRE_MOT_DE_PASSE_SCRAPPER_URL_ENCODED]@mariadb:3306/datamart-wow"
+  collectors:
+    - wow_global_stats
+    - wow_avg_dps_by_class
+    - wow_avg_dps_by_spec
+    - wow_top10_class_presence
+    - wow_hero_spec_distribution
+    - wow_trinket_popularity
+    - wow_avg_ilvl_by_class
+    - wow_boss_difficulty
+    - wow_guild_stats
+    - wow_trinket_combos
+    - wow_top10_hero_spec
+    - wow_spec_per_boss
+    - wow_trinket_per_boss
+    - wow_dps_efficiency
+    - wow_rank_brackets
+
+collectors:
+  # ===========================================
+  # STATS GLOBALES
+  # ===========================================
+  - collector_name: wow_global_stats
+    metrics:
+      - metric_name: wow_total_players_scraped
+        type: gauge
+        help: "Nombre total de joueurs dans la base"
+        values: [total]
+        query: |
+          SELECT COUNT(*) as total FROM player_rankings
+          WHERE scraped_at > NOW() - INTERVAL 24 HOUR
+
+      - metric_name: wow_players_by_region
+        type: gauge
+        help: "Nombre de joueurs par region"
+        key_labels: [region]
+        values: [count]
+        query: |
+          SELECT region, COUNT(*) as count FROM player_rankings
+          WHERE scraped_at > NOW() - INTERVAL 24 HOUR
+          GROUP BY region
+
+      - metric_name: wow_players_by_raid
+        type: gauge
+        help: "Nombre de joueurs par raid"
+        key_labels: [raid]
+        values: [count]
+        query: |
+          SELECT raid, COUNT(*) as count FROM player_rankings
+          WHERE scraped_at > NOW() - INTERVAL 24 HOUR
+          GROUP BY raid
+
+  # ===========================================
+  # DPS MOYEN PAR CLASSE
+  # ===========================================
+  - collector_name: wow_avg_dps_by_class
+    metrics:
+      - metric_name: wow_avg_dps_class
+        type: gauge
+        help: "DPS moyen par classe"
+        key_labels: [class, region]
+        values: [avg_dps]
+        query: |
+          SELECT class, region, ROUND(AVG(amount), 0) as avg_dps
+          FROM player_rankings
+          WHERE scraped_at > NOW() - INTERVAL 24 HOUR
+          GROUP BY class, region
+
+      - metric_name: wow_max_dps_class
+        type: gauge
+        help: "DPS max par classe"
+        key_labels: [class, region]
+        values: [max_dps]
+        query: |
+          SELECT class, region, ROUND(MAX(amount), 0) as max_dps
+          FROM player_rankings
+          WHERE scraped_at > NOW() - INTERVAL 24 HOUR
+          GROUP BY class, region
+
+  # ===========================================
+  # DPS MOYEN PAR SPEC
+  # ===========================================
+  - collector_name: wow_avg_dps_by_spec
+    metrics:
+      - metric_name: wow_avg_dps_spec
+        type: gauge
+        help: "DPS moyen par specialisation"
+        key_labels: [class, spec, region]
+        values: [avg_dps]
+        query: |
+          SELECT class, spec, region, ROUND(AVG(amount), 0) as avg_dps
+          FROM player_rankings
+          WHERE scraped_at > NOW() - INTERVAL 24 HOUR
+          GROUP BY class, spec, region
+
+      - metric_name: wow_avg_dps_hero_spec
+        type: gauge
+        help: "DPS moyen par hero spec"
+        key_labels: [class, spec, hero_spec, region]
+        values: [avg_dps]
+        query: |
+          SELECT class, spec, hero_spec, region, ROUND(AVG(amount), 0) as avg_dps
+          FROM player_rankings
+          WHERE scraped_at > NOW() - INTERVAL 24 HOUR
+            AND hero_spec IS NOT NULL
+          GROUP BY class, spec, hero_spec, region
+
+  # ===========================================
+  # PRESENCE TOP 10
+  # ===========================================
+  - collector_name: wow_top10_class_presence
+    metrics:
+      - metric_name: wow_top10_presence
+        type: gauge
+        help: "Nombre de joueurs dans le top 10 par classe"
+        key_labels: [class]
+        values: [count]
+        query: |
+          SELECT class, COUNT(*) as count
+          FROM player_rankings
+          WHERE player_rank <= 10
+            AND scraped_at > NOW() - INTERVAL 24 HOUR
+          GROUP BY class
+          ORDER BY count DESC
+
+      - metric_name: wow_top10_presence_by_raid
+        type: gauge
+        help: "Presence top 10 par classe et raid"
+        key_labels: [raid, class]
+        values: [count]
+        query: |
+          SELECT raid, class, COUNT(*) as count
+          FROM player_rankings
+          WHERE player_rank <= 10
+            AND scraped_at > NOW() - INTERVAL 24 HOUR
+          GROUP BY raid, class
+
+      - metric_name: wow_top10_presence_spec
+        type: gauge
+        help: "Presence top 10 par spec"
+        key_labels: [class, spec]
+        values: [count]
+        query: |
+          SELECT class, spec, COUNT(*) as count
+          FROM player_rankings
+          WHERE player_rank <= 10
+            AND scraped_at > NOW() - INTERVAL 24 HOUR
+          GROUP BY class, spec
+          ORDER BY count DESC
+
+  # ===========================================
+  # DISTRIBUTION HERO SPECS
+  # ===========================================
+  - collector_name: wow_hero_spec_distribution
+    metrics:
+      - metric_name: wow_hero_spec_count
+        type: gauge
+        help: "Nombre de joueurs par hero spec"
+        key_labels: [class, hero_spec]
+        values: [count]
+        query: |
+          SELECT class, hero_spec, COUNT(*) as count
+          FROM player_rankings
+          WHERE hero_spec IS NOT NULL
+            AND scraped_at > NOW() - INTERVAL 24 HOUR
+          GROUP BY class, hero_spec
+
+      - metric_name: wow_hero_spec_avg_dps
+        type: gauge
+        help: "DPS moyen par hero spec (toutes regions)"
+        key_labels: [class, hero_spec]
+        values: [avg_dps]
+        query: |
+          SELECT class, hero_spec, ROUND(AVG(amount), 0) as avg_dps
+          FROM player_rankings
+          WHERE hero_spec IS NOT NULL
+            AND scraped_at > NOW() - INTERVAL 24 HOUR
+          GROUP BY class, hero_spec
+
+  # ===========================================
+  # TRINKETS POPULAIRES
+  # ===========================================
+  - collector_name: wow_trinket_popularity
+    metrics:
+      - metric_name: wow_trinket_usage
+        type: gauge
+        help: "Utilisation des trinkets (top 20)"
+        key_labels: [trinket]
+        values: [count]
+        query: |
+          SELECT trinket, SUM(cnt) as count FROM (
+            SELECT trinket_1_name as trinket, COUNT(*) as cnt
+            FROM player_rankings
+            WHERE trinket_1_name IS NOT NULL
+              AND scraped_at > NOW() - INTERVAL 24 HOUR
+            GROUP BY trinket_1_name
+            UNION ALL
+            SELECT trinket_2_name as trinket, COUNT(*) as cnt
+            FROM player_rankings
+            WHERE trinket_2_name IS NOT NULL
+              AND scraped_at > NOW() - INTERVAL 24 HOUR
+            GROUP BY trinket_2_name
+          ) combined
+          GROUP BY trinket
+          ORDER BY count DESC
+          LIMIT 20
+
+      - metric_name: wow_trinket_usage_by_class
+        type: gauge
+        help: "Utilisation des trinkets par classe (top 10 par classe)"
+        key_labels: [class, trinket]
+        values: [count]
+        query: |
+          SELECT class, trinket, SUM(cnt) as count FROM (
+            SELECT class, trinket_1_name as trinket, COUNT(*) as cnt
+            FROM player_rankings
+            WHERE trinket_1_name IS NOT NULL
+              AND scraped_at > NOW() - INTERVAL 24 HOUR
+            GROUP BY class, trinket_1_name
+            UNION ALL
+            SELECT class, trinket_2_name as trinket, COUNT(*) as cnt
+            FROM player_rankings
+            WHERE trinket_2_name IS NOT NULL
+              AND scraped_at > NOW() - INTERVAL 24 HOUR
+            GROUP BY class, trinket_2_name
+          ) combined
+          GROUP BY class, trinket
+          ORDER BY class, count DESC
+
+  # ===========================================
+  # ITEM LEVEL MOYEN
+  # ===========================================
+  - collector_name: wow_avg_ilvl_by_class
+    metrics:
+      - metric_name: wow_avg_ilvl
+        type: gauge
+        help: "Item level moyen par classe"
+        key_labels: [class, region]
+        values: [avg_ilvl]
+        query: |
+          SELECT class, region, ROUND(AVG(ilvl), 1) as avg_ilvl
+          FROM player_rankings
+          WHERE scraped_at > NOW() - INTERVAL 24 HOUR
+            AND ilvl IS NOT NULL
+          GROUP BY class, region
+
+      - metric_name: wow_avg_ilvl_top10
+        type: gauge
+        help: "Item level moyen du top 10"
+        key_labels: [raid, region]
+        values: [avg_ilvl]
+        query: |
+          SELECT raid, region, ROUND(AVG(ilvl), 1) as avg_ilvl
+          FROM player_rankings
+          WHERE player_rank <= 10
+            AND scraped_at > NOW() - INTERVAL 24 HOUR
+            AND ilvl IS NOT NULL
+          GROUP BY raid, region
+
+  # ===========================================
+  # DIFFICULTE PAR BOSS
+  # ===========================================
+  - collector_name: wow_boss_difficulty
+    metrics:
+      - metric_name: wow_boss_avg_dps
+        type: gauge
+        help: "DPS moyen par boss (indicateur de difficulte)"
+        key_labels: [raid, boss, region]
+        values: [avg_dps]
+        query: |
+          SELECT raid, boss, region, ROUND(AVG(amount), 0) as avg_dps
+          FROM player_rankings
+          WHERE scraped_at > NOW() - INTERVAL 24 HOUR
+          GROUP BY raid, boss, region
+
+      - metric_name: wow_boss_avg_duration
+        type: gauge
+        help: "Duree moyenne des combats par boss (secondes)"
+        key_labels: [raid, boss, region]
+        values: [avg_duration]
+        query: |
+          SELECT raid, boss, region, ROUND(AVG(duration), 0) as avg_duration
+          FROM player_rankings
+          WHERE scraped_at > NOW() - INTERVAL 24 HOUR
+            AND duration IS NOT NULL
+          GROUP BY raid, boss, region
+
+  # ===========================================
+  # GUILD LEADERBOARD
+  # ===========================================
+  - collector_name: wow_guild_stats
+    metrics:
+      - metric_name: wow_top_guilds_presence
+        type: gauge
+        help: "Guildes avec le plus de joueurs dans les rankings"
+        key_labels: [guild, region]
+        values: [count]
+        query: |
+          SELECT guild_name as guild, region, COUNT(*) as count
+          FROM player_rankings
+          WHERE guild_name IS NOT NULL
+            AND guild_name != ''
+            AND scraped_at > NOW() - INTERVAL 24 HOUR
+          GROUP BY guild_name, region
+          ORDER BY count DESC
+          LIMIT 30
+
+      - metric_name: wow_guild_top10_presence
+        type: gauge
+        help: "Guildes avec joueurs dans le top 10"
+        key_labels: [guild]
+        values: [count]
+        query: |
+          SELECT guild_name as guild, COUNT(*) as count
+          FROM player_rankings
+          WHERE player_rank <= 10
+            AND guild_name IS NOT NULL
+            AND guild_name != ''
+            AND scraped_at > NOW() - INTERVAL 24 HOUR
+          GROUP BY guild_name
+          ORDER BY count DESC
+          LIMIT 20
+
+  # ===========================================
+  # COMBINAISONS DE TRINKETS
+  # ===========================================
+  - collector_name: wow_trinket_combos
+    metrics:
+      - metric_name: wow_trinket_combo_popularity
+        type: gauge
+        help: "Paires de trinkets les plus populaires"
+        key_labels: [trinket_1, trinket_2]
+        values: [count]
+        query: |
+          SELECT trinket_1_name as trinket_1, trinket_2_name as trinket_2, COUNT(*) as count
+          FROM player_rankings
+          WHERE trinket_1_name IS NOT NULL
+            AND trinket_2_name IS NOT NULL
+            AND scraped_at > NOW() - INTERVAL 24 HOUR
+          GROUP BY trinket_1_name, trinket_2_name
+          ORDER BY count DESC
+          LIMIT 20
+
+  # ===========================================
+  # HERO SPEC TOP 10
+  # ===========================================
+  - collector_name: wow_top10_hero_spec
+    metrics:
+      - metric_name: wow_top10_hero_spec_presence
+        type: gauge
+        help: "Hero specs presents dans le top 10"
+        key_labels: [class, hero_spec]
+        values: [count]
+        query: |
+          SELECT class, hero_spec, COUNT(*) as count
+          FROM player_rankings
+          WHERE player_rank <= 10
+            AND hero_spec IS NOT NULL
+            AND scraped_at > NOW() - INTERVAL 24 HOUR
+          GROUP BY class, hero_spec
+          ORDER BY count DESC
+
+  # ===========================================
+  # MEILLEURE SPEC PAR BOSS
+  # ===========================================
+  - collector_name: wow_spec_per_boss
+    metrics:
+      - metric_name: wow_best_spec_per_boss
+        type: gauge
+        help: "DPS moyen par spec et par boss"
+        key_labels: [raid, boss, class, spec]
+        values: [avg_dps]
+        query: |
+          SELECT raid, boss, class, spec, ROUND(AVG(amount), 0) as avg_dps
+          FROM player_rankings
+          WHERE scraped_at > NOW() - INTERVAL 24 HOUR
+          GROUP BY raid, boss, class, spec
+          ORDER BY raid, boss, avg_dps DESC
+
+  # ===========================================
+  # TRINKETS PAR BOSS
+  # ===========================================
+  - collector_name: wow_trinket_per_boss
+    metrics:
+      - metric_name: wow_trinket_by_boss
+        type: gauge
+        help: "Trinkets populaires par boss"
+        key_labels: [raid, boss, trinket]
+        values: [count]
+        query: |
+          SELECT raid, boss, trinket, SUM(cnt) as count FROM (
+            SELECT raid, boss, trinket_1_name as trinket, COUNT(*) as cnt
+            FROM player_rankings
+            WHERE trinket_1_name IS NOT NULL
+              AND scraped_at > NOW() - INTERVAL 24 HOUR
+            GROUP BY raid, boss, trinket_1_name
+            UNION ALL
+            SELECT raid, boss, trinket_2_name as trinket, COUNT(*) as cnt
+            FROM player_rankings
+            WHERE trinket_2_name IS NOT NULL
+              AND scraped_at > NOW() - INTERVAL 24 HOUR
+            GROUP BY raid, boss, trinket_2_name
+          ) combined
+          GROUP BY raid, boss, trinket
+          ORDER BY raid, boss, count DESC
+
+  # ===========================================
+  # EFFICACITE DPS/ILVL
+  # ===========================================
+  - collector_name: wow_dps_efficiency
+    metrics:
+      - metric_name: wow_dps_per_ilvl
+        type: gauge
+        help: "Ratio DPS par point d'ilvl (efficacite)"
+        key_labels: [class, spec]
+        values: [dps_per_ilvl]
+        query: |
+          SELECT class, spec, ROUND(AVG(amount / ilvl), 2) as dps_per_ilvl
+          FROM player_rankings
+          WHERE ilvl IS NOT NULL
+            AND ilvl > 0
+            AND scraped_at > NOW() - INTERVAL 24 HOUR
+          GROUP BY class, spec
+
+  # ===========================================
+  # ANALYSE PAR BRACKET DE RANG
+  # ===========================================
+  - collector_name: wow_rank_brackets
+    metrics:
+      - metric_name: wow_dps_by_rank_bracket
+        type: gauge
+        help: "DPS moyen par tranche de classement"
+        key_labels: [class, rank_bracket]
+        values: [avg_dps]
+        query: |
+          SELECT class, 'top_10' as rank_bracket, ROUND(AVG(amount), 0) as avg_dps
+          FROM player_rankings
+          WHERE player_rank <= 10
+            AND scraped_at > NOW() - INTERVAL 24 HOUR
+          GROUP BY class
+          UNION ALL
+          SELECT class, 'top_50' as rank_bracket, ROUND(AVG(amount), 0) as avg_dps
+          FROM player_rankings
+          WHERE player_rank <= 50
+            AND scraped_at > NOW() - INTERVAL 24 HOUR
+          GROUP BY class
+          UNION ALL
+          SELECT class, 'top_100' as rank_bracket, ROUND(AVG(amount), 0) as avg_dps
+          FROM player_rankings
+          WHERE player_rank <= 100
+            AND scraped_at > NOW() - INTERVAL 24 HOUR
+          GROUP BY class
+          UNION ALL
+          SELECT class, 'top_500' as rank_bracket, ROUND(AVG(amount), 0) as avg_dps
+          FROM player_rankings
+          WHERE player_rank <= 500
+            AND scraped_at > NOW() - INTERVAL 24 HOUR
+          GROUP BY class

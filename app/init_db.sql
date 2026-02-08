@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS player_rankings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    raid VARCHAR(100) NOT NULL,
+    boss VARCHAR(100) NOT NULL,
+    difficulty VARCHAR(50) NOT NULL,
+    region VARCHAR(50) NOT NULL,
+    player_rank INT NOT NULL,
+    player_name VARCHAR(100) NOT NULL,
+    guild_name VARCHAR(100),
+    class VARCHAR(50) NOT NULL,
+    spec VARCHAR(50) NOT NULL,
+    hero_spec VARCHAR(50),
+    amount DOUBLE NOT NULL,
+    duration INT NOT NULL,
+    ilvl INT,
+    trinket_1_name VARCHAR(255),
+    trinket_2_name VARCHAR(255),
+    report_code VARCHAR(50),
+    fight_id INT,
+    scraped_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_raid_boss (raid, boss),
+    INDEX idx_class_spec (class, spec, hero_spec)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -1,0 +1,59 @@
+nerub_ar_palace:
+  id: 38
+  name: "Nerub-ar Palace"
+  # raid_id: Internal ID (38)
+  difficulty:
+    normal:
+      difficulty_id: "difficulty=3"
+    heroic:
+      difficulty_id: "difficulty=4"
+    mythic:
+      # No difficulty_id for Mythic (base url: https://www.warcraftlogs.com/zone/rankings/38?)
+      difficulty_id: null
+  regions:
+    Europe:
+      region_id: "region=2"
+    United States:
+      region_id: "region=1"
+  # url_example: https://www.warcraftlogs.com/zone/rankings/38?difficulty=4&region=2 
+  # = nerub_ar_palace in heroic difficulty with only Europe stats
+
+liberation_of_undermine:
+  id: 42
+  name: "Liberation of Undermine"
+  # raid_id: Internal ID (42)
+  difficulty:
+    normal:
+      difficulty_id: "difficulty=3"
+    heroic:
+      difficulty_id: "difficulty=4"
+    mythic:
+      # No difficulty_id for Mythic (base url: https://www.warcraftlogs.com/zone/rankings/42?)
+      difficulty_id: null
+  regions:
+    Europe:
+      region_id: "region=2"
+    United States:
+      region_id: "region=1"
+  # url_example: https://www.warcraftlogs.com/zone/rankings/42?difficulty=3&region=1 
+  # = liberation_of_undermine in normal difficulty with only United States stats
+
+manaforge_omega:
+  id: 44
+  name: "Manaforge Omega"
+  # raid_id: Internal ID (44)
+  difficulty:
+    normal:
+      difficulty_id: "difficulty=3"
+    heroic:
+      difficulty_id: "difficulty=4"
+    mythic:
+      # No difficulty_id for Mythic (base url: https://www.warcraftlogs.com/zone/rankings/44?)
+      difficulty_id: null
+  regions:
+    Europe:
+      region_id: "region=2"
+    United States:
+      region_id: "region=1"
+  # url_example: https://www.warcraftlogs.com/zone/rankings/44 
+  # = manaforge_omega in mythic difficulty with all region stats

@@ -1,0 +1,1748 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "description": "WoW Mythic Raid Performance Analytics - Analyse des meilleures classes, specs, hero talents et trinkets",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "id": 100,
+      "panels": [],
+      "title": "Vue d'ensemble",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
+      "id": 1,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "expr": "wow_total_players_scraped",
+          "refId": "A"
+        }
+      ],
+      "title": "Total Joueurs Scrapés",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+          "mappings": [],
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 5, "x": 4, "y": 1 },
+      "id": 2,
+      "options": {
+        "displayLabels": ["percent"],
+        "legend": { "displayMode": "table", "placement": "right", "showLegend": true, "values": ["value"] },
+        "pieType": "pie",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "tooltip": { "mode": "single", "sort": "none" }
+      },
+      "targets": [
+        {
+          "expr": "wow_players_by_region",
+          "legendFormat": "{{region}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Répartition par Région",
+      "type": "piechart"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+          "mappings": [],
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 7, "x": 9, "y": 1 },
+      "id": 3,
+      "options": {
+        "displayLabels": ["percent"],
+        "legend": { "displayMode": "table", "placement": "right", "showLegend": true, "values": ["value"] },
+        "pieType": "donut",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "tooltip": { "mode": "single", "sort": "none" }
+      },
+      "targets": [
+        {
+          "expr": "wow_players_by_raid",
+          "legendFormat": "{{raid}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Répartition par Raid",
+      "type": "piechart"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "expr": "count(wow_avg_dps_class)",
+          "refId": "A"
+        }
+      ],
+      "title": "Classes Actives",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "purple", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
+      "id": 5,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "expr": "count(wow_hero_spec_count)",
+          "refId": "A"
+        }
+      ],
+      "title": "Hero Specs Uniques",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "orange", "value": null }] },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 5 },
+      "id": 6,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "expr": "avg(wow_avg_ilvl)",
+          "refId": "A"
+        }
+      ],
+      "title": "iLvl Moyen Global",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "yellow", "value": null }] },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 5 },
+      "id": 7,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "expr": "max(wow_max_dps_class)",
+          "refId": "A"
+        }
+      ],
+      "title": "DPS Max Global",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 5 },
+      "id": 8,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "expr": "avg(wow_avg_dps_class)",
+          "refId": "A"
+        }
+      ],
+      "title": "DPS Moyen Global",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 9 },
+      "id": 101,
+      "panels": [],
+      "title": "Performance par Classe",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "DPS Moyen",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+            "lineWidth": 1,
+            "scaleDistribution": { "type": "linear" },
+            "thresholdsStyle": { "mode": "off" }
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "DeathKnight" }, "properties": [{ "id": "color", "value": { "fixedColor": "#C41E3A", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "DemonHunter" }, "properties": [{ "id": "color", "value": { "fixedColor": "#A330C9", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Druid" }, "properties": [{ "id": "color", "value": { "fixedColor": "#FF7C0A", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Evoker" }, "properties": [{ "id": "color", "value": { "fixedColor": "#33937F", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Hunter" }, "properties": [{ "id": "color", "value": { "fixedColor": "#AAD372", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Mage" }, "properties": [{ "id": "color", "value": { "fixedColor": "#3FC7EB", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Monk" }, "properties": [{ "id": "color", "value": { "fixedColor": "#00FF98", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Paladin" }, "properties": [{ "id": "color", "value": { "fixedColor": "#F48CBA", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Priest" }, "properties": [{ "id": "color", "value": { "fixedColor": "#FFFFFF", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Rogue" }, "properties": [{ "id": "color", "value": { "fixedColor": "#FFF468", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Shaman" }, "properties": [{ "id": "color", "value": { "fixedColor": "#0070DD", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Warlock" }, "properties": [{ "id": "color", "value": { "fixedColor": "#8788EE", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Warrior" }, "properties": [{ "id": "color", "value": { "fixedColor": "#C69B6D", "mode": "fixed" } }] }
+        ]
+      },
+      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 10 },
+      "id": 10,
+      "options": {
+        "barRadius": 0.05,
+        "barWidth": 0.7,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": false },
+        "orientation": "horizontal",
+        "showValue": "always",
+        "stacking": "none",
+        "tooltip": { "mode": "single", "sort": "none" },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "targets": [
+        {
+          "expr": "sort_desc(sum by (class) (wow_avg_dps_class{region=~\"$region\"}))",
+          "legendFormat": "{{class}}",
+          "refId": "A"
+        }
+      ],
+      "title": "DPS Moyen par Classe",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": { "reducers": ["lastNotNull"] }
+        },
+        {
+          "id": "sortBy",
+          "options": { "fields": {}, "sort": [{ "desc": true, "field": "Last *" }] }
+        }
+      ],
+      "type": "barchart"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "DPS Max",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+            "lineWidth": 1,
+            "scaleDistribution": { "type": "linear" },
+            "thresholdsStyle": { "mode": "off" }
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "DeathKnight" }, "properties": [{ "id": "color", "value": { "fixedColor": "#C41E3A", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "DemonHunter" }, "properties": [{ "id": "color", "value": { "fixedColor": "#A330C9", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Druid" }, "properties": [{ "id": "color", "value": { "fixedColor": "#FF7C0A", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Evoker" }, "properties": [{ "id": "color", "value": { "fixedColor": "#33937F", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Hunter" }, "properties": [{ "id": "color", "value": { "fixedColor": "#AAD372", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Mage" }, "properties": [{ "id": "color", "value": { "fixedColor": "#3FC7EB", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Monk" }, "properties": [{ "id": "color", "value": { "fixedColor": "#00FF98", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Paladin" }, "properties": [{ "id": "color", "value": { "fixedColor": "#F48CBA", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Priest" }, "properties": [{ "id": "color", "value": { "fixedColor": "#FFFFFF", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Rogue" }, "properties": [{ "id": "color", "value": { "fixedColor": "#FFF468", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Shaman" }, "properties": [{ "id": "color", "value": { "fixedColor": "#0070DD", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Warlock" }, "properties": [{ "id": "color", "value": { "fixedColor": "#8788EE", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Warrior" }, "properties": [{ "id": "color", "value": { "fixedColor": "#C69B6D", "mode": "fixed" } }] }
+        ]
+      },
+      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 10 },
+      "id": 11,
+      "options": {
+        "barRadius": 0.05,
+        "barWidth": 0.7,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": false },
+        "orientation": "horizontal",
+        "showValue": "always",
+        "stacking": "none",
+        "tooltip": { "mode": "single", "sort": "none" },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "targets": [
+        {
+          "expr": "sort_desc(max by (class) (wow_max_dps_class{region=~\"$region\"}))",
+          "legendFormat": "{{class}}",
+          "refId": "A"
+        }
+      ],
+      "title": "DPS Max par Classe",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": { "reducers": ["lastNotNull"] }
+        },
+        {
+          "id": "sortBy",
+          "options": { "fields": {}, "sort": [{ "desc": true, "field": "Last *" }] }
+        }
+      ],
+      "type": "barchart"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 20 },
+      "id": 102,
+      "panels": [],
+      "title": "Performance par Spécialisation",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "continuous-BlPu" },
+          "custom": {
+            "align": "auto",
+            "cellOptions": { "type": "auto" },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "avg_dps" },
+            "properties": [
+              { "id": "custom.cellOptions", "value": { "mode": "gradient", "type": "gauge", "valueDisplayMode": "text" } },
+              { "id": "displayName", "value": "DPS Moyen" },
+              { "id": "min", "value": 0 }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "class" },
+            "properties": [{ "id": "displayName", "value": "Classe" }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "spec" },
+            "properties": [{ "id": "displayName", "value": "Spécialisation" }]
+          }
+        ]
+      },
+      "gridPos": { "h": 12, "w": 12, "x": 0, "y": 21 },
+      "id": 20,
+      "options": {
+        "cellHeight": "sm",
+        "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
+        "showHeader": true,
+        "sortBy": [{ "desc": true, "displayName": "DPS Moyen" }]
+      },
+      "targets": [
+        {
+          "expr": "wow_avg_dps_spec{region=~\"$region\"}",
+          "format": "table",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "DPS Moyen par Spécialisation",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "Value": { "aggregations": ["lastNotNull"], "operation": "aggregate" },
+              "class": { "aggregations": [], "operation": "groupby" },
+              "spec": { "aggregations": [], "operation": "groupby" }
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": { "Value (lastNotNull)": 2, "class": 0, "spec": 1 },
+            "renameByName": { "Value (lastNotNull)": "avg_dps" }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": { "fields": {}, "sort": [{ "desc": true, "field": "avg_dps" }] }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "continuous-GrYlRd" },
+          "custom": {
+            "align": "auto",
+            "cellOptions": { "type": "auto" },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "dps_per_ilvl" },
+            "properties": [
+              { "id": "custom.cellOptions", "value": { "mode": "gradient", "type": "gauge", "valueDisplayMode": "text" } },
+              { "id": "displayName", "value": "DPS / iLvl" },
+              { "id": "min", "value": 0 }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "class" },
+            "properties": [{ "id": "displayName", "value": "Classe" }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "spec" },
+            "properties": [{ "id": "displayName", "value": "Spécialisation" }]
+          }
+        ]
+      },
+      "gridPos": { "h": 12, "w": 12, "x": 12, "y": 21 },
+      "id": 21,
+      "options": {
+        "cellHeight": "sm",
+        "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
+        "showHeader": true,
+        "sortBy": [{ "desc": true, "displayName": "DPS / iLvl" }]
+      },
+      "targets": [
+        {
+          "expr": "wow_dps_per_ilvl",
+          "format": "table",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Efficacité DPS par iLvl (specs les plus rentables)",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "Value": { "aggregations": ["lastNotNull"], "operation": "aggregate" },
+              "class": { "aggregations": [], "operation": "groupby" },
+              "spec": { "aggregations": [], "operation": "groupby" }
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": { "Value (lastNotNull)": 2, "class": 0, "spec": 1 },
+            "renameByName": { "Value (lastNotNull)": "dps_per_ilvl" }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": { "fields": {}, "sort": [{ "desc": true, "field": "dps_per_ilvl" }] }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 33 },
+      "id": 103,
+      "panels": [],
+      "title": "Présence dans le Top 10",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+            "lineWidth": 1,
+            "scaleDistribution": { "type": "linear" },
+            "thresholdsStyle": { "mode": "off" }
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "DeathKnight" }, "properties": [{ "id": "color", "value": { "fixedColor": "#C41E3A", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "DemonHunter" }, "properties": [{ "id": "color", "value": { "fixedColor": "#A330C9", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Druid" }, "properties": [{ "id": "color", "value": { "fixedColor": "#FF7C0A", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Evoker" }, "properties": [{ "id": "color", "value": { "fixedColor": "#33937F", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Hunter" }, "properties": [{ "id": "color", "value": { "fixedColor": "#AAD372", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Mage" }, "properties": [{ "id": "color", "value": { "fixedColor": "#3FC7EB", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Monk" }, "properties": [{ "id": "color", "value": { "fixedColor": "#00FF98", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Paladin" }, "properties": [{ "id": "color", "value": { "fixedColor": "#F48CBA", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Priest" }, "properties": [{ "id": "color", "value": { "fixedColor": "#FFFFFF", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Rogue" }, "properties": [{ "id": "color", "value": { "fixedColor": "#FFF468", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Shaman" }, "properties": [{ "id": "color", "value": { "fixedColor": "#0070DD", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Warlock" }, "properties": [{ "id": "color", "value": { "fixedColor": "#8788EE", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Warrior" }, "properties": [{ "id": "color", "value": { "fixedColor": "#C69B6D", "mode": "fixed" } }] }
+        ]
+      },
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 34 },
+      "id": 30,
+      "options": {
+        "barRadius": 0.05,
+        "barWidth": 0.7,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": false },
+        "orientation": "horizontal",
+        "showValue": "always",
+        "stacking": "none",
+        "tooltip": { "mode": "single", "sort": "none" },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "targets": [
+        {
+          "expr": "topk(13, wow_top10_presence)",
+          "legendFormat": "{{class}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Classes dans le Top 10",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": { "reducers": ["lastNotNull"] }
+        },
+        {
+          "id": "sortBy",
+          "options": { "fields": {}, "sort": [{ "desc": true, "field": "Last *" }] }
+        }
+      ],
+      "type": "barchart"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+            "lineWidth": 1,
+            "scaleDistribution": { "type": "linear" },
+            "thresholdsStyle": { "mode": "off" }
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 34 },
+      "id": 31,
+      "options": {
+        "barRadius": 0.05,
+        "barWidth": 0.7,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": false },
+        "orientation": "horizontal",
+        "showValue": "always",
+        "stacking": "none",
+        "tooltip": { "mode": "single", "sort": "none" },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "targets": [
+        {
+          "expr": "topk(15, wow_top10_presence_spec)",
+          "legendFormat": "{{class}} {{spec}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Spécialisations dans le Top 10",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": { "reducers": ["lastNotNull"] }
+        },
+        {
+          "id": "sortBy",
+          "options": { "fields": {}, "sort": [{ "desc": true, "field": "Last *" }] }
+        }
+      ],
+      "type": "barchart"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+            "lineWidth": 1,
+            "scaleDistribution": { "type": "linear" },
+            "thresholdsStyle": { "mode": "off" }
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 34 },
+      "id": 32,
+      "options": {
+        "barRadius": 0.05,
+        "barWidth": 0.7,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": false },
+        "orientation": "horizontal",
+        "showValue": "always",
+        "stacking": "none",
+        "tooltip": { "mode": "single", "sort": "none" },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "targets": [
+        {
+          "expr": "topk(15, wow_top10_hero_spec_presence)",
+          "legendFormat": "{{class}} - {{hero_spec}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Hero Specs dans le Top 10",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": { "reducers": ["lastNotNull"] }
+        },
+        {
+          "id": "sortBy",
+          "options": { "fields": {}, "sort": [{ "desc": true, "field": "Last *" }] }
+        }
+      ],
+      "type": "barchart"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 42 },
+      "id": 104,
+      "panels": [],
+      "title": "Hero Talents",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "continuous-BlPu" },
+          "custom": {
+            "align": "auto",
+            "cellOptions": { "type": "auto" },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "count" },
+            "properties": [
+              { "id": "custom.cellOptions", "value": { "mode": "gradient", "type": "gauge", "valueDisplayMode": "text" } },
+              { "id": "displayName", "value": "Joueurs" },
+              { "id": "min", "value": 0 }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "class" },
+            "properties": [{ "id": "displayName", "value": "Classe" }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "hero_spec" },
+            "properties": [{ "id": "displayName", "value": "Hero Talent" }]
+          }
+        ]
+      },
+      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 43 },
+      "id": 40,
+      "options": {
+        "cellHeight": "sm",
+        "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
+        "showHeader": true,
+        "sortBy": [{ "desc": true, "displayName": "Joueurs" }]
+      },
+      "targets": [
+        {
+          "expr": "wow_hero_spec_count{class=~\"$class\"}",
+          "format": "table",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Distribution des Hero Talents",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "Value": { "aggregations": ["lastNotNull"], "operation": "aggregate" },
+              "class": { "aggregations": [], "operation": "groupby" },
+              "hero_spec": { "aggregations": [], "operation": "groupby" }
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": { "Value (lastNotNull)": 2, "class": 0, "hero_spec": 1 },
+            "renameByName": { "Value (lastNotNull)": "count" }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": { "fields": {}, "sort": [{ "desc": true, "field": "count" }] }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "continuous-GrYlRd" },
+          "custom": {
+            "align": "auto",
+            "cellOptions": { "type": "auto" },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "avg_dps" },
+            "properties": [
+              { "id": "custom.cellOptions", "value": { "mode": "gradient", "type": "gauge", "valueDisplayMode": "text" } },
+              { "id": "displayName", "value": "DPS Moyen" },
+              { "id": "min", "value": 0 }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "class" },
+            "properties": [{ "id": "displayName", "value": "Classe" }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "hero_spec" },
+            "properties": [{ "id": "displayName", "value": "Hero Talent" }]
+          }
+        ]
+      },
+      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 43 },
+      "id": 41,
+      "options": {
+        "cellHeight": "sm",
+        "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
+        "showHeader": true,
+        "sortBy": [{ "desc": true, "displayName": "DPS Moyen" }]
+      },
+      "targets": [
+        {
+          "expr": "wow_hero_spec_avg_dps{class=~\"$class\"}",
+          "format": "table",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "DPS Moyen par Hero Talent",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "Value": { "aggregations": ["lastNotNull"], "operation": "aggregate" },
+              "class": { "aggregations": [], "operation": "groupby" },
+              "hero_spec": { "aggregations": [], "operation": "groupby" }
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": { "Value (lastNotNull)": 2, "class": 0, "hero_spec": 1 },
+            "renameByName": { "Value (lastNotNull)": "avg_dps" }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": { "fields": {}, "sort": [{ "desc": true, "field": "avg_dps" }] }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 53 },
+      "id": 105,
+      "panels": [],
+      "title": "Trinkets",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+            "lineWidth": 1,
+            "scaleDistribution": { "type": "linear" },
+            "thresholdsStyle": { "mode": "off" }
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 54 },
+      "id": 50,
+      "options": {
+        "barRadius": 0.05,
+        "barWidth": 0.7,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": false },
+        "orientation": "horizontal",
+        "showValue": "always",
+        "stacking": "none",
+        "tooltip": { "mode": "single", "sort": "none" },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "targets": [
+        {
+          "expr": "topk(15, wow_trinket_usage)",
+          "legendFormat": "{{trinket}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Top 15 Trinkets les plus utilisés",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": { "reducers": ["lastNotNull"] }
+        },
+        {
+          "id": "sortBy",
+          "options": { "fields": {}, "sort": [{ "desc": true, "field": "Last *" }] }
+        }
+      ],
+      "type": "barchart"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "continuous-YlRd" },
+          "custom": {
+            "align": "auto",
+            "cellOptions": { "type": "auto" },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "count" },
+            "properties": [
+              { "id": "custom.cellOptions", "value": { "mode": "gradient", "type": "gauge", "valueDisplayMode": "text" } },
+              { "id": "displayName", "value": "Utilisation" },
+              { "id": "min", "value": 0 }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "trinket_1" },
+            "properties": [{ "id": "displayName", "value": "Trinket 1" }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "trinket_2" },
+            "properties": [{ "id": "displayName", "value": "Trinket 2" }]
+          }
+        ]
+      },
+      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 54 },
+      "id": 51,
+      "options": {
+        "cellHeight": "sm",
+        "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
+        "showHeader": true,
+        "sortBy": [{ "desc": true, "displayName": "Utilisation" }]
+      },
+      "targets": [
+        {
+          "expr": "topk(20, wow_trinket_combo_popularity)",
+          "format": "table",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Combinaisons de Trinkets Populaires",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "Value": { "aggregations": ["lastNotNull"], "operation": "aggregate" },
+              "trinket_1": { "aggregations": [], "operation": "groupby" },
+              "trinket_2": { "aggregations": [], "operation": "groupby" }
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": { "Value (lastNotNull)": 2, "trinket_1": 0, "trinket_2": 1 },
+            "renameByName": { "Value (lastNotNull)": "count" }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": { "fields": {}, "sort": [{ "desc": true, "field": "count" }] }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 64 },
+      "id": 106,
+      "panels": [],
+      "title": "Analyse par Boss",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "continuous-GrYlRd" },
+          "custom": {
+            "align": "auto",
+            "cellOptions": { "type": "auto" },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "avg_dps" },
+            "properties": [
+              { "id": "custom.cellOptions", "value": { "mode": "gradient", "type": "gauge", "valueDisplayMode": "text" } },
+              { "id": "displayName", "value": "DPS Moyen" },
+              { "id": "min", "value": 0 }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "raid" },
+            "properties": [{ "id": "displayName", "value": "Raid" }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "boss" },
+            "properties": [{ "id": "displayName", "value": "Boss" }]
+          }
+        ]
+      },
+      "gridPos": { "h": 12, "w": 12, "x": 0, "y": 65 },
+      "id": 60,
+      "options": {
+        "cellHeight": "sm",
+        "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
+        "showHeader": true,
+        "sortBy": [{ "desc": true, "displayName": "DPS Moyen" }]
+      },
+      "targets": [
+        {
+          "expr": "wow_boss_avg_dps{raid=~\"$raid\", region=~\"$region\"}",
+          "format": "table",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "DPS Moyen par Boss",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "Value": { "aggregations": ["lastNotNull"], "operation": "aggregate" },
+              "boss": { "aggregations": [], "operation": "groupby" },
+              "raid": { "aggregations": [], "operation": "groupby" }
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": { "Value (lastNotNull)": 2, "boss": 1, "raid": 0 },
+            "renameByName": { "Value (lastNotNull)": "avg_dps" }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": { "fields": {}, "sort": [{ "desc": true, "field": "avg_dps" }] }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "continuous-BlPu" },
+          "custom": {
+            "align": "auto",
+            "cellOptions": { "type": "auto" },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "s"
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "avg_duration" },
+            "properties": [
+              { "id": "custom.cellOptions", "value": { "mode": "gradient", "type": "gauge", "valueDisplayMode": "text" } },
+              { "id": "displayName", "value": "Durée Moyenne" },
+              { "id": "min", "value": 0 }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "raid" },
+            "properties": [{ "id": "displayName", "value": "Raid" }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "boss" },
+            "properties": [{ "id": "displayName", "value": "Boss" }]
+          }
+        ]
+      },
+      "gridPos": { "h": 12, "w": 12, "x": 12, "y": 65 },
+      "id": 61,
+      "options": {
+        "cellHeight": "sm",
+        "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
+        "showHeader": true,
+        "sortBy": [{ "desc": false, "displayName": "Durée Moyenne" }]
+      },
+      "targets": [
+        {
+          "expr": "wow_boss_avg_duration{raid=~\"$raid\", region=~\"$region\"}",
+          "format": "table",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Durée Moyenne des Combats (indicateur de difficulté)",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "Value": { "aggregations": ["lastNotNull"], "operation": "aggregate" },
+              "boss": { "aggregations": [], "operation": "groupby" },
+              "raid": { "aggregations": [], "operation": "groupby" }
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": { "Value (lastNotNull)": 2, "boss": 1, "raid": 0 },
+            "renameByName": { "Value (lastNotNull)": "avg_duration" }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": { "fields": {}, "sort": [{ "desc": true, "field": "avg_duration" }] }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 77 },
+      "id": 107,
+      "panels": [],
+      "title": "Meilleures Spécialisations par Boss",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "continuous-GrYlRd" },
+          "custom": {
+            "align": "auto",
+            "cellOptions": { "type": "auto" },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "avg_dps" },
+            "properties": [
+              { "id": "custom.cellOptions", "value": { "mode": "gradient", "type": "gauge", "valueDisplayMode": "text" } },
+              { "id": "displayName", "value": "DPS Moyen" },
+              { "id": "min", "value": 0 }
+            ]
+          }
+        ]
+      },
+      "gridPos": { "h": 14, "w": 24, "x": 0, "y": 78 },
+      "id": 70,
+      "options": {
+        "cellHeight": "sm",
+        "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
+        "showHeader": true,
+        "sortBy": [{ "desc": true, "displayName": "DPS Moyen" }]
+      },
+      "targets": [
+        {
+          "expr": "wow_best_spec_per_boss{raid=~\"$raid\", boss=~\"$boss\"}",
+          "format": "table",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Performance par Spécialisation et Boss",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "Value": { "aggregations": ["lastNotNull"], "operation": "aggregate" },
+              "boss": { "aggregations": [], "operation": "groupby" },
+              "class": { "aggregations": [], "operation": "groupby" },
+              "raid": { "aggregations": [], "operation": "groupby" },
+              "spec": { "aggregations": [], "operation": "groupby" }
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": { "Value (lastNotNull)": 4, "boss": 1, "class": 2, "raid": 0, "spec": 3 },
+            "renameByName": { "Value (lastNotNull)": "avg_dps" }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": { "fields": {}, "sort": [{ "desc": true, "field": "avg_dps" }] }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 92 },
+      "id": 108,
+      "panels": [],
+      "title": "Guildes",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+            "lineWidth": 1,
+            "scaleDistribution": { "type": "linear" },
+            "thresholdsStyle": { "mode": "off" }
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 93 },
+      "id": 80,
+      "options": {
+        "barRadius": 0.05,
+        "barWidth": 0.7,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": false },
+        "orientation": "horizontal",
+        "showValue": "always",
+        "stacking": "none",
+        "tooltip": { "mode": "single", "sort": "none" },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "targets": [
+        {
+          "expr": "topk(15, wow_top_guilds_presence{region=~\"$region\"})",
+          "legendFormat": "{{guild}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Top 15 Guildes (présence dans les rankings)",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": { "reducers": ["lastNotNull"] }
+        },
+        {
+          "id": "sortBy",
+          "options": { "fields": {}, "sort": [{ "desc": true, "field": "Last *" }] }
+        }
+      ],
+      "type": "barchart"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+            "lineWidth": 1,
+            "scaleDistribution": { "type": "linear" },
+            "thresholdsStyle": { "mode": "off" }
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 93 },
+      "id": 81,
+      "options": {
+        "barRadius": 0.05,
+        "barWidth": 0.7,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": false },
+        "orientation": "horizontal",
+        "showValue": "always",
+        "stacking": "none",
+        "tooltip": { "mode": "single", "sort": "none" },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "targets": [
+        {
+          "expr": "topk(15, wow_guild_top10_presence)",
+          "legendFormat": "{{guild}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Guildes dans le Top 10",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": { "reducers": ["lastNotNull"] }
+        },
+        {
+          "id": "sortBy",
+          "options": { "fields": {}, "sort": [{ "desc": true, "field": "Last *" }] }
+        }
+      ],
+      "type": "barchart"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 103 },
+      "id": 109,
+      "panels": [],
+      "title": "Item Level",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "iLvl Moyen",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+            "lineWidth": 1,
+            "scaleDistribution": { "type": "linear" },
+            "thresholdsStyle": { "mode": "off" }
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "DeathKnight" }, "properties": [{ "id": "color", "value": { "fixedColor": "#C41E3A", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "DemonHunter" }, "properties": [{ "id": "color", "value": { "fixedColor": "#A330C9", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Druid" }, "properties": [{ "id": "color", "value": { "fixedColor": "#FF7C0A", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Evoker" }, "properties": [{ "id": "color", "value": { "fixedColor": "#33937F", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Hunter" }, "properties": [{ "id": "color", "value": { "fixedColor": "#AAD372", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Mage" }, "properties": [{ "id": "color", "value": { "fixedColor": "#3FC7EB", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Monk" }, "properties": [{ "id": "color", "value": { "fixedColor": "#00FF98", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Paladin" }, "properties": [{ "id": "color", "value": { "fixedColor": "#F48CBA", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Priest" }, "properties": [{ "id": "color", "value": { "fixedColor": "#FFFFFF", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Rogue" }, "properties": [{ "id": "color", "value": { "fixedColor": "#FFF468", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Shaman" }, "properties": [{ "id": "color", "value": { "fixedColor": "#0070DD", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Warlock" }, "properties": [{ "id": "color", "value": { "fixedColor": "#8788EE", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Warrior" }, "properties": [{ "id": "color", "value": { "fixedColor": "#C69B6D", "mode": "fixed" } }] }
+        ]
+      },
+      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 104 },
+      "id": 90,
+      "options": {
+        "barRadius": 0.05,
+        "barWidth": 0.7,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": false },
+        "orientation": "horizontal",
+        "showValue": "always",
+        "stacking": "none",
+        "tooltip": { "mode": "single", "sort": "none" },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "targets": [
+        {
+          "expr": "avg by (class) (wow_avg_ilvl{region=~\"$region\"})",
+          "legendFormat": "{{class}}",
+          "refId": "A"
+        }
+      ],
+      "title": "iLvl Moyen par Classe",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": { "reducers": ["lastNotNull"] }
+        },
+        {
+          "id": "sortBy",
+          "options": { "fields": {}, "sort": [{ "desc": true, "field": "Last *" }] }
+        }
+      ],
+      "type": "barchart"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "continuous-BlPu" },
+          "custom": {
+            "align": "auto",
+            "cellOptions": { "type": "auto" },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "avg_ilvl" },
+            "properties": [
+              { "id": "custom.cellOptions", "value": { "mode": "gradient", "type": "gauge", "valueDisplayMode": "text" } },
+              { "id": "displayName", "value": "iLvl Moyen Top 10" },
+              { "id": "min", "value": 600 },
+              { "id": "max", "value": 700 }
+            ]
+          }
+        ]
+      },
+      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 104 },
+      "id": 91,
+      "options": {
+        "cellHeight": "sm",
+        "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
+        "showHeader": true,
+        "sortBy": [{ "desc": true, "displayName": "iLvl Moyen Top 10" }]
+      },
+      "targets": [
+        {
+          "expr": "wow_avg_ilvl_top10{region=~\"$region\"}",
+          "format": "table",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "iLvl Moyen du Top 10 par Raid",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "Value": { "aggregations": ["lastNotNull"], "operation": "aggregate" },
+              "raid": { "aggregations": [], "operation": "groupby" },
+              "region": { "aggregations": [], "operation": "groupby" }
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": { "Value (lastNotNull)": 2, "raid": 0, "region": 1 },
+            "renameByName": { "Value (lastNotNull)": "avg_ilvl" }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": { "fields": {}, "sort": [{ "desc": true, "field": "avg_ilvl" }] }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 114 },
+      "id": 110,
+      "panels": [],
+      "title": "Analyse par Bracket de Classement",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": { "type": "linear" },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": { "group": "A", "mode": "none" },
+            "thresholdsStyle": { "mode": "off" }
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 115 },
+      "id": 95,
+      "options": {
+        "legend": { "calcs": ["mean"], "displayMode": "table", "placement": "right", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "targets": [
+        {
+          "expr": "wow_dps_by_rank_bracket{class=~\"$class\"}",
+          "legendFormat": "{{class}} - {{rank_bracket}}",
+          "refId": "A"
+        }
+      ],
+      "title": "DPS par Bracket de Classement (Top 10 vs Top 50 vs Top 100 vs Top 500)",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "5m",
+  "schemaVersion": 38,
+  "tags": ["wow", "mythic", "raid", "performance"],
+  "templating": {
+    "list": [
+      {
+        "current": {},
+        "hide": 0,
+        "includeAll": false,
+        "label": "Datasource",
+        "multi": false,
+        "name": "datasource",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": { "type": "prometheus", "uid": "${datasource}" },
+        "definition": "label_values(wow_players_by_region, region)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Région",
+        "multi": false,
+        "name": "region",
+        "options": [],
+        "query": { "query": "label_values(wow_players_by_region, region)", "refId": "StandardVariableQuery" },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": { "type": "prometheus", "uid": "${datasource}" },
+        "definition": "label_values(wow_players_by_raid, raid)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Raid",
+        "multi": false,
+        "name": "raid",
+        "options": [],
+        "query": { "query": "label_values(wow_players_by_raid, raid)", "refId": "StandardVariableQuery" },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": { "type": "prometheus", "uid": "${datasource}" },
+        "definition": "label_values(wow_avg_dps_class, class)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Classe",
+        "multi": false,
+        "name": "class",
+        "options": [],
+        "query": { "query": "label_values(wow_avg_dps_class, class)", "refId": "StandardVariableQuery" },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": { "type": "prometheus", "uid": "${datasource}" },
+        "definition": "label_values(wow_boss_avg_dps{raid=~\"$raid\"}, boss)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Boss",
+        "multi": false,
+        "name": "boss",
+        "options": [],
+        "query": { "query": "label_values(wow_boss_avg_dps{raid=~\"$raid\"}, boss)", "refId": "StandardVariableQuery" },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "WoW Mythic Raid Analytics",
+  "uid": "wow-mythic-analytics-v3",
+  "version": 1,
+  "weekStart": ""
+}

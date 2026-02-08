@@ -1,0 +1,17 @@
+# ===========================================
+# Grafana Dashboards Provisioning
+# ===========================================
+
+apiVersion: 1
+
+providers:
+  - name: 'WoW Mythic Analytics'
+    orgId: 1
+    folder: 'WoW Raids'
+    folderUid: 'wow-raids'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards

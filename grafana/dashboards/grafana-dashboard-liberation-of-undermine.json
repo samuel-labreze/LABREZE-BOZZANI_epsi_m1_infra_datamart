@@ -1,0 +1,518 @@
+{
+  "annotations": { "list": [] },
+  "description": "Liberation of Undermine - Analyse détaillée des performances Mythique",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "id": 100,
+      "panels": [],
+      "title": "Vue d'ensemble - Liberation of Undermine",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "#F59E0B", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
+      "id": 1,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [{ "expr": "wow_players_by_raid{raid=\"Liberation of Undermine\"}", "refId": "A" }],
+      "title": "Joueurs Analysés",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "yellow", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [{ "expr": "max(wow_boss_avg_dps{raid=\"Liberation of Undermine\"})", "refId": "A" }],
+      "title": "DPS Moyen Max",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "orange", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [{ "expr": "avg(wow_avg_ilvl_top10{raid=\"Liberation of Undermine\"})", "refId": "A" }],
+      "title": "iLvl Moyen Top 10",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "targets": [{ "expr": "avg(wow_boss_avg_duration{raid=\"Liberation of Undermine\"})", "refId": "A" }],
+      "title": "Durée Moyenne Combat",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+          "mappings": [],
+          "unit": "short"
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "Europe" }, "properties": [{ "id": "color", "value": { "fixedColor": "#3B82F6", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "United States" }, "properties": [{ "id": "color", "value": { "fixedColor": "#EF4444", "mode": "fixed" } }] }
+        ]
+      },
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 1 },
+      "id": 5,
+      "options": {
+        "displayLabels": ["percent", "value"],
+        "legend": { "displayMode": "table", "placement": "right", "showLegend": true, "values": ["value", "percent"] },
+        "pieType": "donut",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "tooltip": { "mode": "single", "sort": "none" }
+      },
+      "targets": [{ "expr": "sum by (region) (wow_boss_avg_dps{raid=\"Liberation of Undermine\"})", "legendFormat": "{{region}}", "refId": "A" }],
+      "title": "Répartition EU vs US",
+      "type": "piechart"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 9 },
+      "id": 101,
+      "panels": [],
+      "title": "Performance par Boss",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "continuous-BlPu" },
+          "custom": { "align": "auto", "cellOptions": { "type": "auto" }, "inspect": false },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "DPS Moyen" }, "properties": [{ "id": "custom.cellOptions", "value": { "mode": "gradient", "type": "gauge", "valueDisplayMode": "text" } }, { "id": "min", "value": 0 }] },
+          { "matcher": { "id": "byName", "options": "Durée (s)" }, "properties": [{ "id": "custom.cellOptions", "value": { "mode": "gradient", "type": "gauge", "valueDisplayMode": "text" } }, { "id": "color", "value": { "mode": "continuous-YlRd" } }, { "id": "min", "value": 0 }] }
+        ]
+      },
+      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 10 },
+      "id": 10,
+      "options": { "cellHeight": "md", "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false }, "showHeader": true, "sortBy": [{ "desc": true, "displayName": "DPS Moyen" }] },
+      "targets": [
+        { "expr": "wow_boss_avg_dps{raid=\"Liberation of Undermine\", region=~\"$region\"}", "format": "table", "instant": true, "refId": "A" },
+        { "expr": "wow_boss_avg_duration{raid=\"Liberation of Undermine\", region=~\"$region\"}", "format": "table", "instant": true, "refId": "B" }
+      ],
+      "title": "Statistiques par Boss",
+      "transformations": [
+        { "id": "seriesToColumns", "options": { "byField": "boss" } },
+        { "id": "organize", "options": { "excludeByName": { "Time 1": true, "Time 2": true, "__name__ 1": true, "__name__ 2": true, "instance 1": true, "instance 2": true, "job 1": true, "job 2": true, "raid 1": true, "raid 2": true, "region 1": true, "region 2": true }, "renameByName": { "Value #A": "DPS Moyen", "Value #B": "Durée (s)", "boss": "Boss" } } },
+        { "id": "sortBy", "options": { "fields": {}, "sort": [{ "desc": true, "field": "DPS Moyen" }] } }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "fillOpacity": 80, "gradientMode": "hue", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineWidth": 1, "scaleDistribution": { "type": "linear" }, "thresholdsStyle": { "mode": "off" } },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 10 },
+      "id": 11,
+      "options": { "barRadius": 0.05, "barWidth": 0.7, "fullHighlight": false, "groupWidth": 0.7, "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": false }, "orientation": "horizontal", "showValue": "always", "stacking": "none", "tooltip": { "mode": "single", "sort": "none" }, "xTickLabelRotation": 0, "xTickLabelSpacing": 0 },
+      "targets": [{ "expr": "wow_boss_avg_dps{raid=\"Liberation of Undermine\", region=~\"$region\"}", "legendFormat": "{{boss}}", "refId": "A" }],
+      "title": "DPS Moyen par Boss",
+      "transformations": [
+        { "id": "reduce", "options": { "reducers": ["lastNotNull"] } },
+        { "id": "sortBy", "options": { "fields": {}, "sort": [{ "desc": true, "field": "Last *" }] } }
+      ],
+      "type": "barchart"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 20 },
+      "id": 102,
+      "panels": [],
+      "title": "Classes Dominantes",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "fillOpacity": 80, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineWidth": 1, "scaleDistribution": { "type": "linear" }, "thresholdsStyle": { "mode": "off" } },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "DeathKnight" }, "properties": [{ "id": "color", "value": { "fixedColor": "#C41E3A", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "DemonHunter" }, "properties": [{ "id": "color", "value": { "fixedColor": "#A330C9", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Druid" }, "properties": [{ "id": "color", "value": { "fixedColor": "#FF7C0A", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Evoker" }, "properties": [{ "id": "color", "value": { "fixedColor": "#33937F", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Hunter" }, "properties": [{ "id": "color", "value": { "fixedColor": "#AAD372", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Mage" }, "properties": [{ "id": "color", "value": { "fixedColor": "#3FC7EB", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Monk" }, "properties": [{ "id": "color", "value": { "fixedColor": "#00FF98", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Paladin" }, "properties": [{ "id": "color", "value": { "fixedColor": "#F48CBA", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Priest" }, "properties": [{ "id": "color", "value": { "fixedColor": "#FFFFFF", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Rogue" }, "properties": [{ "id": "color", "value": { "fixedColor": "#FFF468", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Shaman" }, "properties": [{ "id": "color", "value": { "fixedColor": "#0070DD", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Warlock" }, "properties": [{ "id": "color", "value": { "fixedColor": "#8788EE", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Warrior" }, "properties": [{ "id": "color", "value": { "fixedColor": "#C69B6D", "mode": "fixed" } }] }
+        ]
+      },
+      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 21 },
+      "id": 20,
+      "options": { "barRadius": 0.05, "barWidth": 0.7, "fullHighlight": false, "groupWidth": 0.7, "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": false }, "orientation": "horizontal", "showValue": "always", "stacking": "none", "tooltip": { "mode": "single", "sort": "none" }, "xTickLabelRotation": 0, "xTickLabelSpacing": 0 },
+      "targets": [{ "expr": "topk(13, wow_top10_presence_by_raid{raid=\"Liberation of Undermine\"})", "legendFormat": "{{class}}", "refId": "A" }],
+      "title": "Présence dans le Top 10 par Classe",
+      "transformations": [
+        { "id": "reduce", "options": { "reducers": ["lastNotNull"] } },
+        { "id": "sortBy", "options": { "fields": {}, "sort": [{ "desc": true, "field": "Last *" }] } }
+      ],
+      "type": "barchart"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+          "mappings": [],
+          "unit": "short"
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "DeathKnight" }, "properties": [{ "id": "color", "value": { "fixedColor": "#C41E3A", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "DemonHunter" }, "properties": [{ "id": "color", "value": { "fixedColor": "#A330C9", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Druid" }, "properties": [{ "id": "color", "value": { "fixedColor": "#FF7C0A", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Evoker" }, "properties": [{ "id": "color", "value": { "fixedColor": "#33937F", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Hunter" }, "properties": [{ "id": "color", "value": { "fixedColor": "#AAD372", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Mage" }, "properties": [{ "id": "color", "value": { "fixedColor": "#3FC7EB", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Monk" }, "properties": [{ "id": "color", "value": { "fixedColor": "#00FF98", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Paladin" }, "properties": [{ "id": "color", "value": { "fixedColor": "#F48CBA", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Priest" }, "properties": [{ "id": "color", "value": { "fixedColor": "#FFFFFF", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Rogue" }, "properties": [{ "id": "color", "value": { "fixedColor": "#FFF468", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Shaman" }, "properties": [{ "id": "color", "value": { "fixedColor": "#0070DD", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Warlock" }, "properties": [{ "id": "color", "value": { "fixedColor": "#8788EE", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "Warrior" }, "properties": [{ "id": "color", "value": { "fixedColor": "#C69B6D", "mode": "fixed" } }] }
+        ]
+      },
+      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 21 },
+      "id": 21,
+      "options": {
+        "displayLabels": ["percent"],
+        "legend": { "displayMode": "table", "placement": "right", "showLegend": true, "values": ["value", "percent"] },
+        "pieType": "pie",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "tooltip": { "mode": "single", "sort": "none" }
+      },
+      "targets": [{ "expr": "wow_top10_presence_by_raid{raid=\"Liberation of Undermine\"}", "legendFormat": "{{class}}", "refId": "A" }],
+      "title": "Distribution des Classes (Top 10)",
+      "type": "piechart"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 31 },
+      "id": 103,
+      "panels": [],
+      "title": "Meilleures Spécialisations par Boss",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "continuous-GrYlRd" },
+          "custom": { "align": "auto", "cellOptions": { "type": "auto" }, "inspect": false },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "DPS Moyen" }, "properties": [{ "id": "custom.cellOptions", "value": { "mode": "gradient", "type": "gauge", "valueDisplayMode": "text" } }, { "id": "min", "value": 0 }] }
+        ]
+      },
+      "gridPos": { "h": 14, "w": 24, "x": 0, "y": 32 },
+      "id": 30,
+      "options": { "cellHeight": "sm", "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false }, "showHeader": true, "sortBy": [{ "desc": true, "displayName": "DPS Moyen" }] },
+      "targets": [{ "expr": "wow_best_spec_per_boss{raid=\"Liberation of Undermine\", boss=~\"$boss\"}", "format": "table", "instant": true, "refId": "A" }],
+      "title": "Performance Détaillée par Spécialisation",
+      "transformations": [
+        { "id": "groupBy", "options": { "fields": { "Value": { "aggregations": ["lastNotNull"], "operation": "aggregate" }, "boss": { "aggregations": [], "operation": "groupby" }, "class": { "aggregations": [], "operation": "groupby" }, "spec": { "aggregations": [], "operation": "groupby" } } } },
+        { "id": "organize", "options": { "excludeByName": {}, "indexByName": { "Value (lastNotNull)": 3, "boss": 0, "class": 1, "spec": 2 }, "renameByName": { "Value (lastNotNull)": "DPS Moyen", "boss": "Boss", "class": "Classe", "spec": "Spécialisation" } } },
+        { "id": "sortBy", "options": { "fields": {}, "sort": [{ "desc": true, "field": "DPS Moyen" }] } }
+      ],
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 46 },
+      "id": 104,
+      "panels": [],
+      "title": "Trinkets Populaires",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "fillOpacity": 80, "gradientMode": "hue", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineWidth": 1, "scaleDistribution": { "type": "linear" }, "thresholdsStyle": { "mode": "off" } },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 12, "w": 12, "x": 0, "y": 47 },
+      "id": 40,
+      "options": { "barRadius": 0.05, "barWidth": 0.7, "fullHighlight": false, "groupWidth": 0.7, "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": false }, "orientation": "horizontal", "showValue": "always", "stacking": "none", "tooltip": { "mode": "single", "sort": "none" }, "xTickLabelRotation": 0, "xTickLabelSpacing": 0 },
+      "targets": [{ "expr": "topk(12, sum by (trinket) (wow_trinket_by_boss{raid=\"Liberation of Undermine\", boss=~\"$boss\"}))", "legendFormat": "{{trinket}}", "refId": "A" }],
+      "title": "Top 12 Trinkets",
+      "transformations": [
+        { "id": "reduce", "options": { "reducers": ["lastNotNull"] } },
+        { "id": "sortBy", "options": { "fields": {}, "sort": [{ "desc": true, "field": "Last *" }] } }
+      ],
+      "type": "barchart"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "continuous-YlRd" },
+          "custom": { "align": "auto", "cellOptions": { "type": "auto" }, "inspect": false },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] },
+          "unit": "short"
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "Utilisation" }, "properties": [{ "id": "custom.cellOptions", "value": { "mode": "gradient", "type": "gauge", "valueDisplayMode": "text" } }, { "id": "min", "value": 0 }] }
+        ]
+      },
+      "gridPos": { "h": 12, "w": 12, "x": 12, "y": 47 },
+      "id": 41,
+      "options": { "cellHeight": "sm", "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false }, "showHeader": true, "sortBy": [{ "desc": true, "displayName": "Utilisation" }] },
+      "targets": [{ "expr": "wow_trinket_by_boss{raid=\"Liberation of Undermine\", boss=~\"$boss\"}", "format": "table", "instant": true, "refId": "A" }],
+      "title": "Trinkets par Boss",
+      "transformations": [
+        { "id": "groupBy", "options": { "fields": { "Value": { "aggregations": ["lastNotNull"], "operation": "aggregate" }, "boss": { "aggregations": [], "operation": "groupby" }, "trinket": { "aggregations": [], "operation": "groupby" } } } },
+        { "id": "organize", "options": { "excludeByName": {}, "renameByName": { "Value (lastNotNull)": "Utilisation", "boss": "Boss", "trinket": "Trinket" } } },
+        { "id": "sortBy", "options": { "fields": {}, "sort": [{ "desc": true, "field": "Utilisation" }] } }
+      ],
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 59 },
+      "id": 105,
+      "panels": [],
+      "title": "Analyse Détaillée par Boss",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "fillOpacity": 80, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineWidth": 1, "scaleDistribution": { "type": "linear" }, "thresholdsStyle": { "mode": "off" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "short" },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 60 },
+      "id": 50,
+      "options": { "barRadius": 0.05, "barWidth": 0.6, "fullHighlight": false, "groupWidth": 0.7, "legend": { "calcs": [], "displayMode": "hidden", "placement": "bottom", "showLegend": false }, "orientation": "horizontal", "showValue": "always", "stacking": "none", "tooltip": { "mode": "single", "sort": "none" }, "xTickLabelRotation": 0, "xTickLabelSpacing": 0 },
+      "targets": [{ "expr": "topk(5, wow_best_spec_per_boss{raid=\"Liberation of Undermine\", boss=\"Vexie and the Geargrinders\"})", "legendFormat": "{{class}} {{spec}}", "refId": "A" }],
+      "title": "Vexie - Top 5 Specs",
+      "transformations": [{ "id": "reduce", "options": { "reducers": ["lastNotNull"] } }, { "id": "sortBy", "options": { "fields": {}, "sort": [{ "desc": true, "field": "Last *" }] } }],
+      "type": "barchart"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "fillOpacity": 80, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineWidth": 1, "scaleDistribution": { "type": "linear" }, "thresholdsStyle": { "mode": "off" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "short" },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 60 },
+      "id": 51,
+      "options": { "barRadius": 0.05, "barWidth": 0.6, "fullHighlight": false, "groupWidth": 0.7, "legend": { "calcs": [], "displayMode": "hidden", "placement": "bottom", "showLegend": false }, "orientation": "horizontal", "showValue": "always", "stacking": "none", "tooltip": { "mode": "single", "sort": "none" }, "xTickLabelRotation": 0, "xTickLabelSpacing": 0 },
+      "targets": [{ "expr": "topk(5, wow_best_spec_per_boss{raid=\"Liberation of Undermine\", boss=\"Cauldron of Carnage\"})", "legendFormat": "{{class}} {{spec}}", "refId": "A" }],
+      "title": "Cauldron - Top 5 Specs",
+      "transformations": [{ "id": "reduce", "options": { "reducers": ["lastNotNull"] } }, { "id": "sortBy", "options": { "fields": {}, "sort": [{ "desc": true, "field": "Last *" }] } }],
+      "type": "barchart"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "fillOpacity": 80, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineWidth": 1, "scaleDistribution": { "type": "linear" }, "thresholdsStyle": { "mode": "off" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "short" },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 60 },
+      "id": 52,
+      "options": { "barRadius": 0.05, "barWidth": 0.6, "fullHighlight": false, "groupWidth": 0.7, "legend": { "calcs": [], "displayMode": "hidden", "placement": "bottom", "showLegend": false }, "orientation": "horizontal", "showValue": "always", "stacking": "none", "tooltip": { "mode": "single", "sort": "none" }, "xTickLabelRotation": 0, "xTickLabelSpacing": 0 },
+      "targets": [{ "expr": "topk(5, wow_best_spec_per_boss{raid=\"Liberation of Undermine\", boss=\"Rik Reverb\"})", "legendFormat": "{{class}} {{spec}}", "refId": "A" }],
+      "title": "Rik Reverb - Top 5 Specs",
+      "transformations": [{ "id": "reduce", "options": { "reducers": ["lastNotNull"] } }, { "id": "sortBy", "options": { "fields": {}, "sort": [{ "desc": true, "field": "Last *" }] } }],
+      "type": "barchart"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "fillOpacity": 80, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineWidth": 1, "scaleDistribution": { "type": "linear" }, "thresholdsStyle": { "mode": "off" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "short" },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 60 },
+      "id": 53,
+      "options": { "barRadius": 0.05, "barWidth": 0.6, "fullHighlight": false, "groupWidth": 0.7, "legend": { "calcs": [], "displayMode": "hidden", "placement": "bottom", "showLegend": false }, "orientation": "horizontal", "showValue": "always", "stacking": "none", "tooltip": { "mode": "single", "sort": "none" }, "xTickLabelRotation": 0, "xTickLabelSpacing": 0 },
+      "targets": [{ "expr": "topk(5, wow_best_spec_per_boss{raid=\"Liberation of Undermine\", boss=\"Stix Bunkjunker\"})", "legendFormat": "{{class}} {{spec}}", "refId": "A" }],
+      "title": "Stix - Top 5 Specs",
+      "transformations": [{ "id": "reduce", "options": { "reducers": ["lastNotNull"] } }, { "id": "sortBy", "options": { "fields": {}, "sort": [{ "desc": true, "field": "Last *" }] } }],
+      "type": "barchart"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "fillOpacity": 80, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineWidth": 1, "scaleDistribution": { "type": "linear" }, "thresholdsStyle": { "mode": "off" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "short" },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 68 },
+      "id": 54,
+      "options": { "barRadius": 0.05, "barWidth": 0.6, "fullHighlight": false, "groupWidth": 0.7, "legend": { "calcs": [], "displayMode": "hidden", "placement": "bottom", "showLegend": false }, "orientation": "horizontal", "showValue": "always", "stacking": "none", "tooltip": { "mode": "single", "sort": "none" }, "xTickLabelRotation": 0, "xTickLabelSpacing": 0 },
+      "targets": [{ "expr": "topk(5, wow_best_spec_per_boss{raid=\"Liberation of Undermine\", boss=\"Sprocketmonger Lockenstock\"})", "legendFormat": "{{class}} {{spec}}", "refId": "A" }],
+      "title": "Sprocketmonger - Top 5",
+      "transformations": [{ "id": "reduce", "options": { "reducers": ["lastNotNull"] } }, { "id": "sortBy", "options": { "fields": {}, "sort": [{ "desc": true, "field": "Last *" }] } }],
+      "type": "barchart"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "fillOpacity": 80, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineWidth": 1, "scaleDistribution": { "type": "linear" }, "thresholdsStyle": { "mode": "off" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "short" },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 68 },
+      "id": 55,
+      "options": { "barRadius": 0.05, "barWidth": 0.6, "fullHighlight": false, "groupWidth": 0.7, "legend": { "calcs": [], "displayMode": "hidden", "placement": "bottom", "showLegend": false }, "orientation": "horizontal", "showValue": "always", "stacking": "none", "tooltip": { "mode": "single", "sort": "none" }, "xTickLabelRotation": 0, "xTickLabelSpacing": 0 },
+      "targets": [{ "expr": "topk(5, wow_best_spec_per_boss{raid=\"Liberation of Undermine\", boss=\"One-Armed Bandit\"})", "legendFormat": "{{class}} {{spec}}", "refId": "A" }],
+      "title": "One-Armed Bandit - Top 5",
+      "transformations": [{ "id": "reduce", "options": { "reducers": ["lastNotNull"] } }, { "id": "sortBy", "options": { "fields": {}, "sort": [{ "desc": true, "field": "Last *" }] } }],
+      "type": "barchart"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "fillOpacity": 80, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineWidth": 1, "scaleDistribution": { "type": "linear" }, "thresholdsStyle": { "mode": "off" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "short" },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 68 },
+      "id": 56,
+      "options": { "barRadius": 0.05, "barWidth": 0.6, "fullHighlight": false, "groupWidth": 0.7, "legend": { "calcs": [], "displayMode": "hidden", "placement": "bottom", "showLegend": false }, "orientation": "horizontal", "showValue": "always", "stacking": "none", "tooltip": { "mode": "single", "sort": "none" }, "xTickLabelRotation": 0, "xTickLabelSpacing": 0 },
+      "targets": [{ "expr": "topk(5, wow_best_spec_per_boss{raid=\"Liberation of Undermine\", boss=\"Mug'Zee, Heads of Security\"})", "legendFormat": "{{class}} {{spec}}", "refId": "A" }],
+      "title": "Mug'Zee - Top 5 Specs",
+      "transformations": [{ "id": "reduce", "options": { "reducers": ["lastNotNull"] } }, { "id": "sortBy", "options": { "fields": {}, "sort": [{ "desc": true, "field": "Last *" }] } }],
+      "type": "barchart"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "fillOpacity": 80, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineWidth": 1, "scaleDistribution": { "type": "linear" }, "thresholdsStyle": { "mode": "off" } }, "mappings": [], "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }, "unit": "short" },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 68 },
+      "id": 57,
+      "options": { "barRadius": 0.05, "barWidth": 0.6, "fullHighlight": false, "groupWidth": 0.7, "legend": { "calcs": [], "displayMode": "hidden", "placement": "bottom", "showLegend": false }, "orientation": "horizontal", "showValue": "always", "stacking": "none", "tooltip": { "mode": "single", "sort": "none" }, "xTickLabelRotation": 0, "xTickLabelSpacing": 0 },
+      "targets": [{ "expr": "topk(5, wow_best_spec_per_boss{raid=\"Liberation of Undermine\", boss=\"Chrome King Gallywix\"})", "legendFormat": "{{class}} {{spec}}", "refId": "A" }],
+      "title": "Gallywix - Top 5 Specs",
+      "transformations": [{ "id": "reduce", "options": { "reducers": ["lastNotNull"] } }, { "id": "sortBy", "options": { "fields": {}, "sort": [{ "desc": true, "field": "Last *" }] } }],
+      "type": "barchart"
+    }
+  ],
+  "refresh": "5m",
+  "schemaVersion": 38,
+  "tags": ["wow", "mythic", "liberation-of-undermine", "raid"],
+  "templating": {
+    "list": [
+      { "current": {}, "hide": 0, "includeAll": false, "label": "Datasource", "multi": false, "name": "datasource", "options": [], "query": "prometheus", "refresh": 1, "regex": "", "skipUrlSync": false, "type": "datasource" },
+      { "allValue": ".*", "current": {}, "datasource": { "type": "prometheus", "uid": "${datasource}" }, "definition": "label_values(wow_boss_avg_dps{raid=\"Liberation of Undermine\"}, region)", "hide": 0, "includeAll": true, "label": "Région", "multi": false, "name": "region", "options": [], "query": { "query": "label_values(wow_boss_avg_dps{raid=\"Liberation of Undermine\"}, region)", "refId": "StandardVariableQuery" }, "refresh": 1, "regex": "", "skipUrlSync": false, "sort": 1, "type": "query" },
+      { "allValue": ".*", "current": {}, "datasource": { "type": "prometheus", "uid": "${datasource}" }, "definition": "label_values(wow_boss_avg_dps{raid=\"Liberation of Undermine\"}, boss)", "hide": 0, "includeAll": true, "label": "Boss", "multi": true, "name": "boss", "options": [], "query": { "query": "label_values(wow_boss_avg_dps{raid=\"Liberation of Undermine\"}, boss)", "refId": "StandardVariableQuery" }, "refresh": 1, "regex": "", "skipUrlSync": false, "sort": 1, "type": "query" }
+    ]
+  },
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Liberation of Undermine - Mythic Analytics",
+  "uid": "wow-liberation-undermine",
+  "version": 1,
+  "weekStart": ""
+}
