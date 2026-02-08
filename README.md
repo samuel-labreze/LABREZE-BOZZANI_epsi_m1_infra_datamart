@@ -10,7 +10,7 @@ Entrepot de donnees decisionnel pour l'analyse des performances des meilleurs jo
 
 | Prenom | Nom | Role |
 |--------|-----|------|
-| Samuel | LABREZE | Etudiant / Joueur Mythique WoW |
+| Samuel | LABREZE | Etudiant / Joueur Mythique WoW / Puant|
 
 ---
 
@@ -457,4 +457,5 @@ rendu_tp/
 Projet academique - EPSI 2026
 
 Donnees issues de WarcraftLogs (https://www.warcraftlogs.com) - Usage educatif uniquement.
+
 
