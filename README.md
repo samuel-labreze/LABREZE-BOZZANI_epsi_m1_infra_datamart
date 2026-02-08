@@ -10,16 +10,29 @@ Entrepot de donnees decisionnel pour l'analyse des performances des meilleurs jo
 
 | Prenom | Nom | Role |
 |--------|-----|------|
-| Samuel | LABREZE | Etudiant / Joueur Mythique WoW / Nerd qui pu |
+| Samuel | LABREZE | Etudiant / Joueur Mythique WoW |
 
 ---
+
+# ═══════════════════════════════════════════════════════════════
+# ÉTAPE 1 - JEU DE DONNÉES
+# ═══════════════════════════════════════════════════════════════
 
 ## Source de donnees
 
 **API WarcraftLogs GraphQL v2**
-https://www.warcraftlogs.com/api/v2/client
+- **Lien** : https://www.warcraftlogs.com/api/v2/client
+- **Documentation** : https://www.warcraftlogs.com/v2-api-docs/warcraft/
 
 WarcraftLogs est la plateforme de reference pour le suivi des performances en raid dans World of Warcraft. Elle collecte et agrege les logs de combat de millions de joueurs a travers le monde.
+
+### Caracteristiques du jeu de donnees
+
+| Critere | Valeur |
+|---------|--------|
+| **Volume** | ~72 000 entrees (24 boss x 500 joueurs x 2 regions x 3 raids) |
+| **Type de donnees** | Statistiques in-game detaillees |
+| **Jeu** | World of Warcraft (MMORPG avec fortes interactions) |
 
 ### Donnees extraites
 
@@ -30,15 +43,11 @@ WarcraftLogs est la plateforme de reference pour le suivi des performances en ra
 | **Echantillon** | Top 500 joueurs EU + Top 500 joueurs US par boss |
 | **Metriques** | DPS, duree de combat, item level, classe, specialisation, hero talents, trinkets |
 
-**Volume** : ~72 000 entrees (24 boss x 500 joueurs x 2 regions x 3 raids)
-
----
-
-## Objectif metier
+### Objectif metier
 
 > **Identifier la meilleure classe a jouer (avec le bon hero talent et les bons trinkets) pour performer au mieux sur chaque boss Mythique, selon le role.**
 
-### Questions analytiques
+#### Questions analytiques
 
 - Quelles classes/specs dominent le top 10 par boss ?
 - Quels trinkets sont les plus utilises par les meilleurs joueurs ?
@@ -48,7 +57,11 @@ WarcraftLogs est la plateforme de reference pour le suivi des performances en ra
 
 ---
 
-## Architecture technique
+# ═══════════════════════════════════════════════════════════════
+# ÉTAPE 2 - ARCHITECTURE TECHNIQUE (Docker Compose ELT)
+# ═══════════════════════════════════════════════════════════════
+
+## Architecture ELT
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -62,42 +75,48 @@ WarcraftLogs est la plateforme de reference pour le suivi des performances en ra
              │ OAuth 2.0
              ▼
     ┌──────────────────┐
-    │  Python Scripts  │  ◄── EXTRACT : Authentification + Requetes GraphQL
+    │  Python Scraper  │  ◄── EXTRACT : Authentification + Requetes GraphQL
     │  (app/core.py)   │      TRANSFORM : Enrichissement hero talents
     │  (run_all.py)    │      LOAD : Insertion MariaDB
     └────────┬─────────┘
              │
              ▼
     ┌──────────────────┐
-    │     MariaDB      │  ◄── Stockage relationnel
+    │     MariaDB      │  ◄── Stockage relationnel (Extract/Load)
     │  player_rankings │
     └────────┬─────────┘
              │
              ▼
     ┌──────────────────┐
-    │   SQL Exporter   │  ◄── Exposition metriques Prometheus
+    │   SQL Exporter   │  ◄── Transformation SQL (30+ metriques)
     │   (30+ metrics)  │
     └────────┬─────────┘
              │
              ▼
     ┌──────────────────┐
-    │    Prometheus    │  ◄── Collecte et stockage time-series
+    │    Prometheus    │  ◄── Collecte time-series
     └────────┬─────────┘
              │
              ▼
     ┌──────────────────┐
-    │     Grafana      │  ◄── Visualisation et dashboards
+    │     Grafana      │  ◄── Visualisation (4 dashboards)
     │   (4 dashboards) │
     └──────────────────┘
 ```
 
----
+## Docker Compose - Services
 
-## Pipeline de transformation des donnees
+| Service | Image | Port | Role |
+|---------|-------|------|------|
+| **mariadb** | mariadb:10.11 | 3306 | Base de donnees relationnelle |
+| **scraper** | python:3.11-slim | - | Scripts ETL Python |
+| **sql-exporter** | burningalchemist/sql_exporter | 9399 | Transformation SQL → Prometheus |
+| **prometheus** | prom/prometheus | 9090 | Stockage time-series |
+| **grafana** | grafana/grafana | 3000 | Visualisation |
 
-Bien que n'utilisant pas Airbyte, dbt ou Jupyter, notre pipeline Python realise les memes operations de transformation :
+## Pipeline de donnees
 
-### 1. Extraction (Extract)
+### Extract (Extraction)
 
 ```python
 # app/core.py - get_access_token()
@@ -109,7 +128,7 @@ response = requests.post(
 )
 ```
 
-### 2. Transformation (Transform)
+### Transform (Transformation)
 
 ```python
 # app/core.py - fetch_rankings() + get_hero_spec_from_talents()
@@ -123,15 +142,14 @@ response = requests.post(
 
 # Transformation 3 : Enrichissement
 # - Extraction des trinkets depuis combatantInfo
-# - Calcul des metriques derivees
 # - Normalisation des noms de classes/specs
 ```
 
-### 3. Chargement (Load)
+### Load (Chargement)
 
 ```python
 # app/core.py - save_to_db()
-# Insertion en batch dans MariaDB avec gestion des doublons
+# Insertion en batch dans MariaDB
 cursor.executemany("""
     INSERT INTO player_rankings
     (raid, boss, difficulty, region, player_rank, ...)
@@ -139,7 +157,7 @@ cursor.executemany("""
 """, batch_data)
 ```
 
-### 4. Exposition (Serve)
+### Serve (Exposition via SQL Exporter)
 
 ```yaml
 # sql-exporter/sql_exporter.yml
@@ -149,49 +167,11 @@ cursor.executemany("""
 
 ---
 
-## Modele de donnees
+# ═══════════════════════════════════════════════════════════════
+# ÉTAPE 3 - MODÈLE RELATIONNEL (ERD / MCD)
+# ═══════════════════════════════════════════════════════════════
 
-### Schema de la table principale
-
-```sql
-CREATE TABLE player_rankings (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-
-    -- Dimensions contextuelles
-    raid VARCHAR(100) NOT NULL,
-    boss VARCHAR(100) NOT NULL,
-    difficulty VARCHAR(50) NOT NULL,
-    region VARCHAR(50) NOT NULL,
-
-    -- Dimensions joueur
-    player_rank INT NOT NULL,
-    player_name VARCHAR(100) NOT NULL,
-    guild_name VARCHAR(100),
-    class VARCHAR(50) NOT NULL,
-    spec VARCHAR(50) NOT NULL,
-    hero_spec VARCHAR(50),
-
-    -- Metriques de performance
-    amount DOUBLE NOT NULL,          -- DPS
-    duration INT NOT NULL,           -- Duree en secondes
-    ilvl INT,                        -- Item level
-
-    -- Equipement
-    trinket_1_name VARCHAR(255),
-    trinket_2_name VARCHAR(255),
-
-    -- Tracabilite
-    report_code VARCHAR(50),
-    fight_id INT,
-    scraped_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-    -- Index pour performances
-    INDEX idx_raid_boss (raid, boss),
-    INDEX idx_class_spec (class, spec, hero_spec)
-);
-```
-
-### Modele conceptuel (MCD)
+## Modele Conceptuel de Donnees (MCD)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -240,59 +220,122 @@ CREATE TABLE player_rankings (
                              └──────────────────────────┘
 ```
 
-> **Note** : Pour des raisons de performance et de simplicite d'implementation, nous avons opte pour un modele denomalise (flat table) qui combine toutes les dimensions. Cette approche est courante en Business Intelligence pour les data marts analytiques.
+## Schema physique (Implementation)
+
+> **Note** : Pour des raisons de performance et de simplicite, nous avons opte pour un modele **denormalise** (flat table). Cette approche est courante en Business Intelligence pour les data marts analytiques.
+
+```sql
+-- app/init_db.sql
+CREATE TABLE player_rankings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    -- Dimensions contextuelles
+    raid VARCHAR(100) NOT NULL,
+    boss VARCHAR(100) NOT NULL,
+    difficulty VARCHAR(50) NOT NULL,
+    region VARCHAR(50) NOT NULL,
+
+    -- Dimensions joueur
+    player_rank INT NOT NULL,
+    player_name VARCHAR(100) NOT NULL,
+    guild_name VARCHAR(100),
+    class VARCHAR(50) NOT NULL,
+    spec VARCHAR(50) NOT NULL,
+    hero_spec VARCHAR(50),
+
+    -- Metriques de performance
+    amount DOUBLE NOT NULL,          -- DPS
+    duration INT NOT NULL,           -- Duree en secondes
+    ilvl INT,                        -- Item level
+
+    -- Equipement
+    trinket_1_name VARCHAR(255),
+    trinket_2_name VARCHAR(255),
+
+    -- Tracabilite
+    report_code VARCHAR(50),
+    fight_id INT,
+    scraped_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    -- Index pour performances
+    INDEX idx_raid_boss (raid, boss),
+    INDEX idx_class_spec (class, spec, hero_spec)
+);
+```
 
 ---
 
-## Metriques exposees (SQL Exporter)
+# ═══════════════════════════════════════════════════════════════
+# ÉTAPE 4 - CHARGEMENT & TRANSFORMATION DES DONNÉES
+# ═══════════════════════════════════════════════════════════════
 
-### Statistiques globales
-- `wow_total_players_scraped` - Nombre total de joueurs
-- `wow_players_by_region` - Joueurs par region
-- `wow_players_by_raid` - Joueurs par raid
+## Transformations effectuees
 
-### Performance par classe/spec
-- `wow_avg_dps_class` - DPS moyen par classe
-- `wow_max_dps_class` - DPS max par classe
-- `wow_avg_dps_spec` - DPS moyen par specialisation
-- `wow_avg_dps_hero_spec` - DPS moyen par hero spec
+### 1. Extraction API → Donnees brutes
 
-### Presence dans le top
-- `wow_top10_presence` - Classes dans le top 10
-- `wow_top10_presence_spec` - Specs dans le top 10
-- `wow_top10_hero_spec_presence` - Hero specs dans le top 10
+Le scraper Python (`run_all.py`) effectue :
+- **Authentification OAuth 2.0** avec WarcraftLogs
+- **Requetes GraphQL paginées** (500 joueurs max par boss)
+- **8 workers parallèles** pour optimiser le temps de scraping
 
-### Trinkets
-- `wow_trinket_usage` - Trinkets les plus utilises
-- `wow_trinket_combo_popularity` - Combinaisons populaires
-- `wow_trinket_by_boss` - Trinkets par boss
+### 2. Transformations Python
 
-### Analyse par boss
-- `wow_boss_avg_dps` - DPS moyen par boss
-- `wow_boss_avg_duration` - Duree moyenne par boss
-- `wow_best_spec_per_boss` - Meilleure spec par boss
+| Transformation | Description | Fichier |
+|----------------|-------------|---------|
+| **Aplatissement JSON** | Structure GraphQL imbriquee → table plate | `core.py` |
+| **Resolution Hero Talents** | talent_id → nom lisible (466 mappings) | `hero_talents_map.json` |
+| **Extraction Trinkets** | combatantInfo.gear[12,13] → noms | `core.py` |
+| **Normalisation** | Classes/specs en format standard | `core.py` |
 
-### Guildes
-- `wow_top_guilds_presence` - Guildes les plus representees
-- `wow_guild_top10_presence` - Guildes dans le top 10
+### 3. Transformations SQL (SQL Exporter)
+
+30+ requetes SQL transforment les donnees brutes en metriques agregees :
+
+```yaml
+# sql-exporter/sql_exporter.yml - Exemples
+
+# DPS moyen par classe et region
+SELECT class, region, ROUND(AVG(amount), 0) as avg_dps
+FROM player_rankings
+WHERE scraped_at > NOW() - INTERVAL 24 HOUR
+GROUP BY class, region
+
+# Trinkets les plus populaires
+SELECT trinket, SUM(cnt) as count FROM (
+    SELECT trinket_1_name as trinket, COUNT(*) as cnt
+    FROM player_rankings GROUP BY trinket_1_name
+    UNION ALL
+    SELECT trinket_2_name as trinket, COUNT(*) as cnt
+    FROM player_rankings GROUP BY trinket_2_name
+) combined
+GROUP BY trinket ORDER BY count DESC LIMIT 20
+```
+
+### 4. Metriques exposees (30+)
+
+| Categorie | Metriques |
+|-----------|-----------|
+| **Stats globales** | `wow_total_players_scraped`, `wow_players_by_region`, `wow_players_by_raid` |
+| **Performance classe** | `wow_avg_dps_class`, `wow_max_dps_class`, `wow_avg_dps_spec` |
+| **Top 10** | `wow_top10_presence`, `wow_top10_presence_spec`, `wow_top10_hero_spec_presence` |
+| **Trinkets** | `wow_trinket_usage`, `wow_trinket_combo_popularity`, `wow_trinket_by_boss` |
+| **Boss** | `wow_boss_avg_dps`, `wow_boss_avg_duration`, `wow_best_spec_per_boss` |
+| **Guildes** | `wow_top_guilds_presence`, `wow_guild_top10_presence` |
 
 ---
+
+# ═══════════════════════════════════════════════════════════════
+# VISUALISATION (Grafana)
+# ═══════════════════════════════════════════════════════════════
 
 ## Dashboards Grafana
 
-### 1. Dashboard Global (`grafana-dashboard-wow-v3.json`)
-Vue d'ensemble de tous les raids avec comparaisons globales.
-
-### 2. Nerub-ar Palace (`grafana-dashboard-nerub-ar-palace.json`)
-Analyse detaillee du raid Nerub-ar Palace (8 boss).
-
-### 3. Liberation of Undermine (`grafana-dashboard-liberation-of-undermine.json`)
-Analyse detaillee du raid Liberation of Undermine (8 boss).
-
-### 4. Manaforge Omega (`grafana-dashboard-manaforge-omega.json`)
-Analyse detaillee du raid Manaforge Omega (8 boss).
-
----
+| Dashboard | Fichier | Description |
+|-----------|---------|-------------|
+| **Global** | `grafana-dashboard-wow-v3.json` | Vue d'ensemble tous raids |
+| **Nerub-ar Palace** | `grafana-dashboard-nerub-ar-palace.json` | Analyse raid (8 boss) |
+| **Liberation of Undermine** | `grafana-dashboard-liberation-of-undermine.json` | Analyse raid (8 boss) |
+| **Manaforge Omega** | `grafana-dashboard-manaforge-omega.json` | Analyse raid (8 boss) |
 
 ## Captures d'ecran
 
@@ -310,36 +353,47 @@ Analyse detaillee du raid Manaforge Omega (8 boss).
 
 ---
 
-## Deploiement
+# ═══════════════════════════════════════════════════════════════
+# DÉPLOIEMENT
+# ═══════════════════════════════════════════════════════════════
 
-### Prerequis
+## Prerequis
+
 - Docker & Docker Compose
-- Acces reseau aux services (MariaDB, Prometheus)
+- Credentials WarcraftLogs API (CLIENT_ID, CLIENT_SECRET)
 
-### Lancement
+## Installation
 
 ```bash
-# Cloner le depot
-git clone <url-du-depot>
-cd rendu_tp
+# 1. Cloner le depot
+git clone https://github.com/samuel-labreze/LABREZE_epsi_m1_infra_datamart.git
+cd LABREZE_epsi_m1_infra_datamart
 
-# Lancer la stack complete
+# 2. Configurer les credentials
+# Editer docker-compose.yml et remplacer les placeholders :
+# - [VOTRE_MOT_DE_PASSE_ROOT]
+# - [VOTRE_MOT_DE_PASSE_SCRAPPER]
+# - [VOTRE_WCL_CLIENT_ID]
+# - [VOTRE_WCL_CLIENT_SECRET]
+
+# 3. Lancer la stack
 docker-compose up -d
 
-# Verifier les services
+# 4. Verifier les services
 docker-compose ps
 
-# Lancer un scraping manuel
-docker-compose exec scraper python run_all.py
+# 5. Voir les logs du scraper
+docker logs -f wow-scraper
 ```
 
-### Acces aux services
+## Acces aux services
 
 | Service | URL | Credentials |
 |---------|-----|-------------|
-| Grafana | http://localhost:3000 | admin / admin |
-| Prometheus | http://localhost:9090 | - |
-| SQL Exporter | http://localhost:9399/metrics | - |
+| **Grafana** | http://localhost:3000 | admin / admin |
+| **Prometheus** | http://localhost:9090 | - |
+| **SQL Exporter** | http://localhost:9399/metrics | - |
+| **MariaDB** | localhost:3306 | root / [votre_password] |
 
 ---
 
@@ -347,27 +401,37 @@ docker-compose exec scraper python run_all.py
 
 ```
 rendu_tp/
-├── README.md                    # Ce fichier
-├── docker-compose.yml           # Orchestration des services
-├── app/
-│   ├── Dockerfile               # Image Docker des scripts
-│   ├── requirements.txt         # Dependances Python
-│   ├── core.py                  # Bibliotheque principale (OAuth, API, DB)
+├── README.md                    # Documentation (ce fichier)
+├── docker-compose.yml           # Orchestration Docker
+├── .env.example                 # Template variables d'environnement
+│
+├── app/                         # Scripts Python (ETL)
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   ├── core.py                  # Bibliotheque principale
 │   ├── run_all.py               # Orchestrateur multi-thread
-│   ├── check_quota.py           # Verification quota API
-│   ├── wipe_db.py               # Nettoyage base de donnees
-│   ├── init_db.sql              # Schema de la table
-│   ├── raid_id.yaml             # Configuration des raids
-│   └── hero_talents_map.json    # Mapping des hero talents
-├── sql-exporter/
-│   ├── docker-compose.yml       # (legacy)
-│   └── sql_exporter.yml         # Configuration des metriques
-├── grafana/
-│   ├── dashboards/              # Fichiers JSON des dashboards
-│   └── provisioning/            # Auto-provisioning Grafana
-├── screenshots/                 # Captures d'ecran des dashboards
+│   ├── init_db.sql              # Schema SQL
+│   ├── raid_id.yaml             # Config raids
+│   └── hero_talents_map.json    # Mapping talents
+│
+├── sql-exporter/                # Transformation SQL
+│   └── sql_exporter.yml         # 30+ metriques
+│
+├── prometheus/                  # Collecte metriques
+│   └── prometheus.yml
+│
+├── grafana/                     # Visualisation
+│   ├── dashboards/              # 4 fichiers JSON
+│   └── provisioning/            # Auto-config
+│
+├── screenshots/                 # Captures dashboards
+│   ├── dashboard_global.png
+│   ├── dashboard_nerub_ar.png
+│   ├── dashboard_liberation.png
+│   └── dashboard_manaforge.png
+│
 └── docs/
-    └── schema_mcd.md            # Documentation du modele
+    └── schema_mcd.md            # Documentation modele
 ```
 
 ---
@@ -376,33 +440,15 @@ rendu_tp/
 
 ### Pourquoi Python plutot qu'Airbyte/dbt ?
 
-1. **Flexibilite API GraphQL** : L'API WarcraftLogs utilise GraphQL avec pagination complexe et authentification OAuth. Python permet un controle fin de ces mecanismes.
-
-2. **Transformation en temps reel** : Les hero talents necessitent un mapping dynamique depuis un fichier JSON de 466 entrees. Cette logique est plus naturelle en Python.
-
-3. **Multi-threading** : Le scraping de 48 endpoints (24 boss x 2 regions) beneficie du parallelisme Python (8 workers).
+1. **API GraphQL complexe** : Pagination, OAuth, donnees imbriquees
+2. **Transformation temps reel** : Mapping hero talents (466 entrees)
+3. **Multi-threading** : 8 workers pour 48 endpoints
 
 ### Pourquoi Grafana plutot que Metabase ?
 
-1. **Integration Prometheus native** : Grafana est l'outil de reference pour visualiser des metriques Prometheus.
-
-2. **Dashboards as Code** : Les dashboards JSON sont versionnables et reproductibles.
-
-3. **Richesse des visualisations** : Bar charts, pie charts, tables avec gauges, heatmaps.
-
----
-
-## Resultats et conclusions
-
-Le pipeline permet d'identifier :
-
-- Les **classes meta** pour chaque boss mythique
-- Les **hero talents optimaux** par specialisation
-- Les **trinkets BiS** (Best in Slot) par contexte
-- Les **differences regionales** EU vs US
-- Les **guildes dominantes** dans le competitive
-
-Ces insights sont directement exploitables par les joueurs souhaitant optimiser leurs performances en raid mythique.
+1. **Integration Prometheus native**
+2. **Dashboards as Code** (JSON versionnable)
+3. **Richesse visualisations** : Bar charts, pie charts, gauges
 
 ---
 
