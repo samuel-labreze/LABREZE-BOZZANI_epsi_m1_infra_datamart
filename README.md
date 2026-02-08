@@ -1,6 +1,6 @@
 # World of Warcraft - Mythic Raid Performance Analytics
 
-## Projet Big Data / Business Intelligence - EPSI
+## Projet Entrepots de données / Datamart - EPSI M1 INFRA Campus Bordeaux
 
 Entrepot de donnees decisionnel pour l'analyse des performances des meilleurs joueurs de World of Warcraft en contenu Mythique.
 
@@ -10,9 +10,7 @@ Entrepot de donnees decisionnel pour l'analyse des performances des meilleurs jo
 
 | Prenom | Nom | Role |
 |--------|-----|------|
-| [PRENOM] | [NOM] | Data Engineer |
-| [PRENOM] | [NOM] | Data Analyst |
-| [PRENOM] | [NOM] | DevOps |
+| Samuel | LABREZE | Etudiant / Joueur Mythique WoW / Nerd qui pu |
 
 ---
 
@@ -302,13 +300,13 @@ Analyse detaillee du raid Manaforge Omega (8 boss).
 ![Dashboard Global](screenshots/dashboard_global.png)
 
 ### Nerub-ar Palace
-![Nerub-ar Palace](screenshots/nerub_ar_palace.png)
+![Nerub-ar Palace](screenshots/dashboard_nerub_ar.png)
 
 ### Liberation of Undermine
-![Liberation of Undermine](screenshots/liberation_of_undermine.png)
+![Liberation of Undermine](screenshots/dashboard_liberation.png)
 
 ### Manaforge Omega
-![Manaforge Omega](screenshots/manaforge_omega.png)
+![Manaforge Omega](screenshots/dashboard_manaforge.png)
 
 ---
 
@@ -413,3 +411,4 @@ Ces insights sont directement exploitables par les joueurs souhaitant optimiser 
 Projet academique - EPSI 2026
 
 Donnees issues de WarcraftLogs (https://www.warcraftlogs.com) - Usage educatif uniquement.
+
