@@ -14,9 +14,9 @@ Entrepot de donnees decisionnel pour l'analyse des performances des meilleurs jo
 
 ---
 
-# ═══════════════════════════════════════════════════════════════
+# ════════════════════════════════
 # ÉTAPE 1 - JEU DE DONNÉES
-# ═══════════════════════════════════════════════════════════════
+# ════════════════════════════════
 
 ## Source de donnees
 
@@ -57,9 +57,9 @@ WarcraftLogs est la plateforme de reference pour le suivi des performances en ra
 
 ---
 
-# ═══════════════════════════════════════════════════════════════
+# ════════════════════════════════
 # ÉTAPE 2 - ARCHITECTURE TECHNIQUE (Docker Compose ELT)
-# ═══════════════════════════════════════════════════════════════
+# ════════════════════════════════
 
 ## Architecture ELT
 
@@ -167,9 +167,9 @@ cursor.executemany("""
 
 ---
 
-# ═══════════════════════════════════════════════════════════════
+# ════════════════════════════════
 # ÉTAPE 3 - MODÈLE RELATIONNEL (ERD / MCD)
-# ═══════════════════════════════════════════════════════════════
+# ════════════════════════════════
 
 ## Modele Conceptuel de Donnees (MCD)
 
@@ -265,9 +265,9 @@ CREATE TABLE player_rankings (
 
 ---
 
-# ═══════════════════════════════════════════════════════════════
+# ════════════════════════════════
 # ÉTAPE 4 - CHARGEMENT & TRANSFORMATION DES DONNÉES
-# ═══════════════════════════════════════════════════════════════
+# ════════════════════════════════
 
 ## Transformations effectuees
 
@@ -324,9 +324,9 @@ GROUP BY trinket ORDER BY count DESC LIMIT 20
 
 ---
 
-# ═══════════════════════════════════════════════════════════════
+# ════════════════════════════════
 # VISUALISATION (Grafana)
-# ═══════════════════════════════════════════════════════════════
+# ════════════════════════════════
 
 ## Dashboards Grafana
 
@@ -353,9 +353,9 @@ GROUP BY trinket ORDER BY count DESC LIMIT 20
 
 ---
 
-# ═══════════════════════════════════════════════════════════════
+# ════════════════════════════════
 # DÉPLOIEMENT
-# ═══════════════════════════════════════════════════════════════
+# ════════════════════════════════
 
 ## Prerequis
 
@@ -457,5 +457,6 @@ rendu_tp/
 Projet academique - EPSI 2026
 
 Donnees issues de WarcraftLogs (https://www.warcraftlogs.com) - Usage educatif uniquement.
+
 
 
