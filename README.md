@@ -162,69 +162,28 @@ cursor.executemany("""
 ## Modele Conceptuel de Donnees (MCD)
 
 ```mermaid
-erDiagram
-    RAID ||--o{ BOSS : contient
-    BOSS }o--|| PLAYER_RANKING : "classe sur"
-    REGION }o--|| PLAYER_RANKING : localise
-    CLASS ||--o{ SPEC : possede
-    SPEC ||--o{ HERO_SPEC : evolue
-    CLASS }o--|| PLAYER_RANKING : joue
-    SPEC }o--|| PLAYER_RANKING : specialise
-    HERO_SPEC }o--|| PLAYER_RANKING : utilise
-    TRINKET }o--|| PLAYER_RANKING : equipe
+flowchart LR
+    RAID["<b>RAID</b><br/>─────────<br/>raid_id PK<br/>name<br/>zone_id"] -->|"1:N"| BOSS
+    BOSS["<b>BOSS</b><br/>─────────<br/>boss_id PK<br/>name<br/>raid_id FK"] -->|"1:N"| PR
+    CLASS["<b>CLASS</b><br/>─────────<br/>class_id PK<br/>name"] -->|"1:N"| SPEC
+    SPEC["<b>SPEC</b><br/>─────────<br/>spec_id PK<br/>name<br/>class_id FK<br/>role"] -->|"1:N"| HERO
+    HERO["<b>HERO_SPEC</b><br/>─────────<br/>hero_id PK<br/>name<br/>spec_id FK"] -->|"1:N"| PR
 
-    RAID {
-        int raid_id PK
-        varchar name
-        int zone_id
-    }
-    BOSS {
-        int boss_id PK
-        varchar name
-        int raid_id FK
-    }
-    REGION {
-        int region_id PK
-        varchar name
-    }
-    CLASS {
-        int class_id PK
-        varchar name
-    }
-    SPEC {
-        int spec_id PK
-        varchar name
-        int class_id FK
-        varchar role
-    }
-    HERO_SPEC {
-        int hero_id PK
-        varchar name
-        int spec_id FK
-    }
-    TRINKET {
-        int trinket_id PK
-        varchar name
-        int item_level
-    }
-    PLAYER_RANKING {
-        int id PK
-        int raid_id FK
-        int boss_id FK
-        int region_id FK
-        int class_id FK
-        int spec_id FK
-        int hero_spec_id FK
-        varchar player_name
-        varchar guild_name
-        int player_rank
-        double amount "DPS"
-        int duration
-        int ilvl
-        int trinket_1 FK
-        int trinket_2 FK
-        datetime scraped_at
-    }
+    CLASS -->|"1:N"| PR
+    SPEC -->|"1:N"| PR
+    REGION["<b>REGION</b><br/>─────────<br/>region_id PK<br/>name"] -->|"1:N"| PR
+    TRINKET["<b>TRINKET</b><br/>─────────<br/>trinket_id PK<br/>name<br/>item_level"] -->|"1:N (x2)"| PR
+
+    PR["<b>PLAYER_RANKING</b><br/>═════════<br/>id PK<br/>─────────<br/>raid_id FK<br/>boss_id FK<br/>region_id FK<br/>class_id FK<br/>spec_id FK<br/>hero_spec_id FK<br/>trinket_1 FK<br/>trinket_2 FK<br/>─────────<br/>player_name<br/>guild_name<br/><i>player_rank</i><br/><i>amount - DPS</i><br/><i>duration</i><br/><i>ilvl</i><br/>scraped_at"]
+
+    style PR fill:#2c3e50,color:#fff,stroke:#fff,stroke-width:2px
+    style RAID fill:#3498db,color:#fff,stroke:#fff
+    style BOSS fill:#2980b9,color:#fff,stroke:#fff
+    style CLASS fill:#e74c3c,color:#fff,stroke:#fff
+    style SPEC fill:#c0392b,color:#fff,stroke:#fff
+    style HERO fill:#a93226,color:#fff,stroke:#fff
+    style REGION fill:#9b59b6,color:#fff,stroke:#fff
+    style TRINKET fill:#e67e22,color:#fff,stroke:#fff
 ```
 
 ---
