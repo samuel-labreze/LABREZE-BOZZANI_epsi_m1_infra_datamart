@@ -15,6 +15,10 @@ Entrepot de donnees decisionnel pour l'analyse des performances des meilleurs jo
 
 ---
 
+# ╔══════════════════════════════════════════╗
+# ║           ATELIER 1                      ║
+# ╚══════════════════════════════════════════╝
+
 # ════════════════════════════════
 # ÉTAPE 1 - JEU DE DONNÉES
 # ════════════════════════════════
@@ -64,46 +68,29 @@ WarcraftLogs est la plateforme de reference pour le suivi des performances en ra
 
 ## Architecture ELT
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                         ARCHITECTURE ELT                                 │
-└─────────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    A["WarcraftLogs\nGraphQL API v2"] -->|"OAuth 2.0"| B
+    B["Python Scraper\n(core.py + run_all.py)"] -->|"INSERT batch"| C
+    C["MariaDB\nplayer_rankings"] -->|"SQL queries"| D
+    D["SQL Exporter\n30+ metriques"] -->|"HTTP /metrics"| E
+    E["Prometheus\nTime-series"] -->|"PromQL"| F
+    F["Grafana\n4 dashboards"]
 
-    ┌──────────────────┐
-    │  WarcraftLogs    │
-    │  GraphQL API v2  │
-    └────────┬─────────┘
-             │ OAuth 2.0
-             ▼
-    ┌──────────────────┐
-    │  Python Scraper  │  ◄── EXTRACT : Authentification + Requetes GraphQL
-    │  (app/core.py)   │      TRANSFORM : Enrichissement hero talents
-    │  (run_all.py)    │      LOAD : Insertion MariaDB
-    └────────┬─────────┘
-             │
-             ▼
-    ┌──────────────────┐
-    │     MariaDB      │  ◄── Stockage relationnel (Extract/Load)
-    │  player_rankings │
-    └────────┬─────────┘
-             │
-             ▼
-    ┌──────────────────┐
-    │   SQL Exporter   │  ◄── Transformation SQL (30+ metriques)
-    │   (30+ metrics)  │
-    └────────┬─────────┘
-             │
-             ▼
-    ┌──────────────────┐
-    │    Prometheus    │  ◄── Collecte time-series
-    └────────┬─────────┘
-             │
-             ▼
-    ┌──────────────────┐
-    │     Grafana      │  ◄── Visualisation (4 dashboards)
-    │   (4 dashboards) │
-    └──────────────────┘
+    style A fill:#4a90d9,color:#fff
+    style B fill:#f5a623,color:#fff
+    style C fill:#7b68ee,color:#fff
+    style D fill:#e74c3c,color:#fff
+    style E fill:#e67e22,color:#fff
+    style F fill:#2ecc71,color:#fff
 ```
+
+| Etape | Composant | Role |
+|-------|-----------|------|
+| **EXTRACT** | Python Scraper | Authentification OAuth 2.0 + Requetes GraphQL paginées |
+| **TRANSFORM** | Python Scraper | Enrichissement hero talents, extraction trinkets |
+| **LOAD** | Python Scraper | Insertion batch dans MariaDB |
+| **SERVE** | SQL Exporter | 30+ requetes SQL → metriques Prometheus → Grafana |
 
 ## Docker Compose - Services
 
@@ -174,51 +161,76 @@ cursor.executemany("""
 
 ## Modele Conceptuel de Donnees (MCD)
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                        MODELE CONCEPTUEL                                 │
-└─────────────────────────────────────────────────────────────────────────┘
+```mermaid
+erDiagram
+    RAID ||--o{ BOSS : contient
+    RAID {
+        int raid_id PK
+        varchar name
+        int zone_id
+    }
 
-    ┌──────────────┐         ┌──────────────┐         ┌──────────────┐
-    │    RAID      │         │     BOSS     │         │   REGION     │
-    ├──────────────┤         ├──────────────┤         ├──────────────┤
-    │ raid_id (PK) │◄───┐    │ boss_id (PK) │    ┌───►│ region_id(PK)│
-    │ name         │    │    │ name         │    │    │ name         │
-    │ zone_id      │    │    │ raid_id (FK) │────┘    └──────────────┘
-    └──────────────┘    │    └──────────────┘                 │
-                        │           │                         │
-                        │           ▼                         │
-                        │    ┌──────────────────────────────┐ │
-                        └────│      PLAYER_RANKING          │◄┘
-                             ├──────────────────────────────┤
-                             │ id (PK)                      │
-    ┌──────────────┐         │ raid_id (FK)                 │
-    │    CLASS     │         │ boss_id (FK)                 │
-    ├──────────────┤         │ region_id (FK)               │
-    │ class_id (PK)│◄────────│ class_id (FK)                │
-    │ name         │         │ spec_id (FK)                 │
-    └──────────────┘         │ hero_spec_id (FK)            │
-           │                 │ player_name                  │
-           ▼                 │ guild_name                   │
-    ┌──────────────┐         │ player_rank                  │
-    │    SPEC      │         │ amount (DPS)                 │
-    ├──────────────┤         │ duration                     │
-    │ spec_id (PK) │◄────────│ ilvl                         │
-    │ name         │         │ trinket_1 (FK)               │
-    │ class_id(FK) │         │ trinket_2 (FK)               │
-    │ role         │         │ scraped_at                   │
-    └──────────────┘         └──────────────────────────────┘
-           │                              │
-           ▼                              │
-    ┌──────────────┐                      │
-    │  HERO_SPEC   │                      │
-    ├──────────────┤         ┌────────────┴─────────────┐
-    │ hero_id (PK) │◄────────│        TRINKET           │
-    │ name         │         ├──────────────────────────┤
-    │ spec_id (FK) │         │ trinket_id (PK)          │
-    └──────────────┘         │ name                     │
-                             │ item_level               │
-                             └──────────────────────────┘
+    BOSS ||--o{ PLAYER_RANKING : classe
+    BOSS {
+        int boss_id PK
+        varchar name
+        int raid_id FK
+    }
+
+    REGION ||--o{ PLAYER_RANKING : localise
+    REGION {
+        int region_id PK
+        varchar name
+    }
+
+    CLASS ||--o{ SPEC : possede
+    CLASS ||--o{ PLAYER_RANKING : joue
+    CLASS {
+        int class_id PK
+        varchar name
+    }
+
+    SPEC ||--o{ HERO_SPEC : evolue
+    SPEC ||--o{ PLAYER_RANKING : specialise
+    SPEC {
+        int spec_id PK
+        varchar name
+        int class_id FK
+        varchar role
+    }
+
+    HERO_SPEC ||--o{ PLAYER_RANKING : utilise
+    HERO_SPEC {
+        int hero_id PK
+        varchar name
+        int spec_id FK
+    }
+
+    TRINKET ||--o{ PLAYER_RANKING : equipe
+    TRINKET {
+        int trinket_id PK
+        varchar name
+        int item_level
+    }
+
+    PLAYER_RANKING {
+        int id PK
+        int raid_id FK
+        int boss_id FK
+        int region_id FK
+        int class_id FK
+        int spec_id FK
+        int hero_spec_id FK
+        varchar player_name
+        varchar guild_name
+        int player_rank
+        double amount "DPS"
+        int duration
+        int ilvl
+        int trinket_1 FK
+        int trinket_2 FK
+        datetime scraped_at
+    }
 ```
 
 ---
@@ -354,6 +366,479 @@ GROUP BY trinket ORDER BY count DESC LIMIT 20
 
 ### Manaforge Omega
 ![Manaforge Omega](screenshots/dashboard_manaforge.png)
+
+---
+
+# ╔══════════════════════════════════════════╗
+# ║           ATELIER 2                      ║
+# ╚══════════════════════════════════════════╝
+
+# ════════════════════════════════
+# ÉTAPE 1 - MODÉLISATION DIMENSIONNELLE (Schéma en étoile)
+# ════════════════════════════════
+
+## Objectif
+
+Transformer la table plate `player_rankings` (Atelier 1) en un **schema en etoile** structure pour l'analyse BI, permettant de repondre a des questions complexes multi-axes.
+
+### Questions analytiques cibles
+
+> - *"Quel est le DPS moyen par hero spec sur le boss Anub'arak en region EU la semaine du reset ?"*
+> - *"Quels trinkets dominent le top 10 sur Liberation of Undermine le week-end vs la semaine ?"*
+> - *"Quelle spec a le meilleur ratio DPS/ilvl sur chaque boss de Manaforge Omega ?"*
+
+### Note sur la difficulte
+
+> Ce datamart est **filtre exclusivement sur la difficulte Mythique** (difficulty_id = 5). La difficulte n'est donc pas une dimension : c'est un **filtre fixe du perimetre**. Toutes les donnees collectees et analysees concernent uniquement le contenu Mythique, le plus haut niveau de difficulte du jeu.
+
+---
+
+## Schema en etoile
+
+> **Granularite** : 1 ligne = 1 performance joueur sur 1 boss, 1 region, 1 date
+>
+> **Perimetre** : Difficulte Mythique uniquement (filtre fixe)
+
+```mermaid
+erDiagram
+    fact_ranking }o--|| dim_boss : "boss_key"
+    fact_ranking }o--|| dim_spec : "spec_key"
+    fact_ranking }o--|| dim_player : "player_key"
+    fact_ranking }o--|| dim_region : "region_key"
+    fact_ranking }o--|| dim_time : "time_key"
+    fact_ranking }o--o| dim_trinket : "trinket_1_key"
+    fact_ranking }o--o| dim_trinket : "trinket_2_key"
+
+    fact_ranking {
+        int ranking_key PK "Surrogate Key"
+        int boss_key FK
+        int spec_key FK
+        int player_key FK
+        int region_key FK
+        int time_key FK
+        int trinket_1_key FK
+        int trinket_2_key FK
+        int player_rank "Mesure - Rang"
+        double amount "Mesure - DPS"
+        int duration "Mesure - Duree (s)"
+        int ilvl "Mesure - Item Level"
+        varchar report_code "Dim degeneree"
+        int fight_id "Dim degeneree"
+    }
+
+    dim_boss {
+        int boss_key PK "Surrogate Key"
+        varchar boss_name
+        varchar raid_name "Denormalise Raid"
+        int zone_id
+        int boss_order
+    }
+
+    dim_spec {
+        int spec_key PK "Surrogate Key"
+        varchar class_name "Denormalise Class"
+        varchar spec_name
+        varchar hero_spec_name "Denormalise Hero"
+        varchar role "DPS - Healer - Tank"
+    }
+
+    dim_player {
+        int player_key PK "Surrogate Key"
+        varchar player_name
+        varchar guild_name
+    }
+
+    dim_region {
+        int region_key PK "Surrogate Key"
+        varchar region_name
+        varchar region_code
+    }
+
+    dim_time {
+        int time_key PK "Surrogate Key"
+        date scraped_date
+        int hour
+        int day_of_week
+        varchar day_name
+        boolean is_weekend
+        boolean is_reset_day "Mardi EU - Mercredi US"
+        int raid_week
+        int month
+        int year
+    }
+
+    dim_trinket {
+        int trinket_key PK "Surrogate Key"
+        varchar trinket_name
+    }
+```
+
+> **Note** : `dim_trinket` est une **role-playing dimension** : la table de faits la reference deux fois (`trinket_1_key` et `trinket_2_key`) car chaque joueur equipe 2 trinkets.
+
+---
+
+## Detail des tables
+
+### Table de faits : `fact_ranking`
+
+**Granularite** : 1 ligne = 1 joueur classe sur 1 boss, dans 1 region, a 1 date de scraping.
+
+| Colonne | Type | Description |
+|---------|------|-------------|
+| `ranking_key` | INT (PK, SK) | Cle technique auto-incrementee |
+| `boss_key` | INT (FK) | Reference vers dim_boss |
+| `spec_key` | INT (FK) | Reference vers dim_spec |
+| `player_key` | INT (FK) | Reference vers dim_player |
+| `region_key` | INT (FK) | Reference vers dim_region |
+| `time_key` | INT (FK) | Reference vers dim_time |
+| `trinket_1_key` | INT (FK) | Reference vers dim_trinket (slot 1) |
+| `trinket_2_key` | INT (FK) | Reference vers dim_trinket (slot 2) |
+| `player_rank` | INT | Rang dans le classement (mesure) |
+| `amount` | DOUBLE | DPS (mesure principale) |
+| `duration` | INT | Duree du combat en secondes (mesure) |
+| `ilvl` | INT | Item level du joueur (mesure) |
+| `report_code` | VARCHAR(50) | Dimension degeneree - code du rapport WCL |
+| `fight_id` | INT | Dimension degeneree - ID du combat |
+
+### Dimension : `dim_boss`
+
+Denormalisation de la hierarchie Raid → Boss. Chaque boss porte les informations de son raid.
+
+| Colonne | Type | Description |
+|---------|------|-------------|
+| `boss_key` | INT (PK, SK) | Cle technique |
+| `boss_name` | VARCHAR(100) | Nom du boss (ex: "Anub'arak") |
+| `raid_name` | VARCHAR(100) | Nom du raid (ex: "Nerub-ar Palace") |
+| `zone_id` | INT | ID WarcraftLogs du raid (38, 42, 44) |
+| `boss_order` | INT | Ordre du boss dans le raid (1 a 8) |
+
+### Dimension : `dim_spec`
+
+Denormalisation de la hierarchie Classe → Specialisation → Hero Talent. Permet l'analyse a n'importe quel niveau sans jointure.
+
+| Colonne | Type | Description |
+|---------|------|-------------|
+| `spec_key` | INT (PK, SK) | Cle technique |
+| `class_name` | VARCHAR(50) | Classe (ex: "Mage") |
+| `spec_name` | VARCHAR(50) | Specialisation (ex: "Fire") |
+| `hero_spec_name` | VARCHAR(50) | Hero talent (ex: "Sunfury") |
+| `role` | VARCHAR(20) | Role : DPS, Healer, Tank |
+
+### Dimension : `dim_player`
+
+| Colonne | Type | Description |
+|---------|------|-------------|
+| `player_key` | INT (PK, SK) | Cle technique |
+| `player_name` | VARCHAR(100) | Nom du personnage |
+| `guild_name` | VARCHAR(100) | Nom de la guilde |
+
+### Dimension : `dim_region`
+
+| Colonne | Type | Description |
+|---------|------|-------------|
+| `region_key` | INT (PK, SK) | Cle technique |
+| `region_name` | VARCHAR(50) | Nom complet (Europe, United States) |
+| `region_code` | VARCHAR(10) | Code court (eu, us) |
+
+### Dimension : `dim_time`
+
+Dimension temporelle enrichie avec des concepts specifiques a WoW (jour de reset hebdomadaire).
+
+| Colonne | Type | Description |
+|---------|------|-------------|
+| `time_key` | INT (PK, SK) | Cle technique |
+| `scraped_date` | DATE | Date du scraping |
+| `hour` | INT | Heure (0-23) |
+| `day_of_week` | INT | Jour de la semaine (1=Lundi, 7=Dimanche) |
+| `day_name` | VARCHAR(20) | Nom du jour (Lundi, Mardi...) |
+| `is_weekend` | BOOLEAN | Samedi ou Dimanche |
+| `is_reset_day` | BOOLEAN | Jour de reset raid (Mardi EU / Mercredi US) |
+| `raid_week` | INT | Numero de semaine raid (depuis debut de saison) |
+| `month` | INT | Mois (1-12) |
+| `year` | INT | Annee |
+
+### Dimension : `dim_trinket`
+
+| Colonne | Type | Description |
+|---------|------|-------------|
+| `trinket_key` | INT (PK, SK) | Cle technique |
+| `trinket_name` | VARCHAR(255) | Nom du trinket |
+
+> **Note** : La table de faits reference `dim_trinket` **deux fois** (trinket_1_key et trinket_2_key) car chaque joueur equipe 2 trinkets. C'est un pattern classique de "role-playing dimension".
+
+---
+
+# ════════════════════════════════
+# ÉTAPE 2 - ALIMENTATION DES DIMENSIONS
+# ════════════════════════════════
+
+## Outil utilise : Scripts Python personnalises (core.py)
+
+### Pourquoi pas dbt ou Airbyte ?
+
+| Critere | dbt / Airbyte | Notre approche (Python) |
+|---------|---------------|-------------------------|
+| **Source de donnees** | Connecteurs pre-faits (BDD, API REST) | API **GraphQL** avec OAuth 2.0, pagination custom, donnees imbriquees → aucun connecteur existant |
+| **Transformation** | SQL declaratif (dbt) ou mappings visuels (Airbyte) | Mapping hero talents via fichier JSON de 466 entrees (logique Python) + extraction trinkets depuis des objets `gear[]` imbriques |
+| **Performance** | Execution sequentielle | **8 threads paralleles** pour scraper 48 endpoints simultanément |
+| **Complexite d'infra** | Necessite un serveur dbt ou instance Airbyte (lourde) | Un simple container Python qui s'execute et se termine |
+| **Pertinence** | Ideal pour transformer des donnees **deja dans une BDD** | Nos donnees viennent d'une **API externe**, pas d'une BDD existante |
+
+> **En resume** : dbt et Airbyte sont conçus pour transformer des donnees entre bases de donnees ou depuis des connecteurs standard. Notre source (API GraphQL WarcraftLogs avec OAuth, pagination, et donnees profondement imbriquees) n'a pas de connecteur existant. Le scraper Python est le seul choix realiste pour l'extraction, et il gere aussi les transformations en un seul passage efficace.
+
+---
+
+## Creation des tables de dimensions
+
+```sql
+-- ================================================
+-- CREATION DES DIMENSIONS (surrogate keys)
+-- ================================================
+
+-- dim_boss : denormalise raid + boss
+CREATE TABLE dim_boss (
+    boss_key INT AUTO_INCREMENT PRIMARY KEY,
+    boss_name VARCHAR(100) NOT NULL,
+    raid_name VARCHAR(100) NOT NULL,
+    zone_id INT,
+    boss_order INT,
+    UNIQUE KEY uk_boss (boss_name, raid_name)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- dim_spec : denormalise classe + spec + hero talent
+CREATE TABLE dim_spec (
+    spec_key INT AUTO_INCREMENT PRIMARY KEY,
+    class_name VARCHAR(50) NOT NULL,
+    spec_name VARCHAR(50) NOT NULL,
+    hero_spec_name VARCHAR(50),
+    role VARCHAR(20),
+    UNIQUE KEY uk_spec (class_name, spec_name, hero_spec_name)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- dim_player
+CREATE TABLE dim_player (
+    player_key INT AUTO_INCREMENT PRIMARY KEY,
+    player_name VARCHAR(100) NOT NULL,
+    guild_name VARCHAR(100),
+    UNIQUE KEY uk_player (player_name, guild_name)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- dim_region
+CREATE TABLE dim_region (
+    region_key INT AUTO_INCREMENT PRIMARY KEY,
+    region_name VARCHAR(50) NOT NULL,
+    region_code VARCHAR(10) NOT NULL,
+    UNIQUE KEY uk_region (region_name)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- dim_time : enrichie avec concepts WoW
+CREATE TABLE dim_time (
+    time_key INT AUTO_INCREMENT PRIMARY KEY,
+    scraped_date DATE NOT NULL,
+    hour INT NOT NULL,
+    day_of_week INT NOT NULL,
+    day_name VARCHAR(20) NOT NULL,
+    is_weekend BOOLEAN NOT NULL,
+    is_reset_day BOOLEAN NOT NULL,
+    raid_week INT,
+    month INT NOT NULL,
+    year INT NOT NULL,
+    UNIQUE KEY uk_time (scraped_date, hour)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- dim_trinket
+CREATE TABLE dim_trinket (
+    trinket_key INT AUTO_INCREMENT PRIMARY KEY,
+    trinket_name VARCHAR(255) NOT NULL,
+    UNIQUE KEY uk_trinket (trinket_name)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+## Alimentation des dimensions
+
+Les dimensions sont peuplees **a partir de la table plate `player_rankings`** (Atelier 1) via des requetes `INSERT ... SELECT DISTINCT` qui garantissent l'unicite grace aux contraintes `UNIQUE KEY`.
+
+```sql
+-- ================================================
+-- ALIMENTATION DES DIMENSIONS
+-- Extraction des valeurs uniques depuis la flat table
+-- ================================================
+
+-- dim_region (2 membres)
+INSERT IGNORE INTO dim_region (region_name, region_code)
+SELECT DISTINCT
+    region,
+    CASE region
+        WHEN 'Europe' THEN 'eu'
+        WHEN 'United States' THEN 'us'
+    END
+FROM player_rankings;
+
+-- dim_boss (24 boss x 3 raids = ~24 membres)
+INSERT IGNORE INTO dim_boss (boss_name, raid_name, zone_id, boss_order)
+SELECT DISTINCT
+    boss,
+    raid,
+    CASE raid
+        WHEN 'Nerub-ar Palace' THEN 38
+        WHEN 'Liberation of Undermine' THEN 42
+        WHEN 'Manaforge Omega' THEN 44
+    END,
+    NULL  -- boss_order a completer manuellement
+FROM player_rankings;
+
+-- dim_spec (~80 combinaisons classe/spec/hero)
+INSERT IGNORE INTO dim_spec (class_name, spec_name, hero_spec_name, role)
+SELECT DISTINCT
+    class,
+    spec,
+    hero_spec,
+    NULL  -- role a enrichir manuellement (DPS/Healer/Tank)
+FROM player_rankings;
+
+-- dim_player (~plusieurs milliers de joueurs uniques)
+INSERT IGNORE INTO dim_player (player_name, guild_name)
+SELECT DISTINCT player_name, guild_name
+FROM player_rankings;
+
+-- dim_time (genere depuis les timestamps de scraping)
+INSERT IGNORE INTO dim_time (scraped_date, hour, day_of_week, day_name, is_weekend, is_reset_day, raid_week, month, year)
+SELECT DISTINCT
+    DATE(scraped_at),
+    HOUR(scraped_at),
+    DAYOFWEEK(scraped_at),
+    DAYNAME(scraped_at),
+    DAYOFWEEK(scraped_at) IN (1, 7),           -- Dimanche=1, Samedi=7
+    DAYOFWEEK(scraped_at) = 3,                  -- Mardi = jour de reset EU (3=Tuesday)
+    WEEK(scraped_at, 1),                        -- Semaine ISO
+    MONTH(scraped_at),
+    YEAR(scraped_at)
+FROM player_rankings;
+
+-- dim_trinket (extraction des trinkets uniques depuis les 2 slots)
+INSERT IGNORE INTO dim_trinket (trinket_name)
+SELECT DISTINCT trinket_1_name FROM player_rankings WHERE trinket_1_name IS NOT NULL
+UNION
+SELECT DISTINCT trinket_2_name FROM player_rankings WHERE trinket_2_name IS NOT NULL;
+```
+
+---
+
+# ════════════════════════════════
+# ÉTAPE 3 - REMPLISSAGE DE LA TABLE DE FAITS
+# ════════════════════════════════
+
+## Creation de la table de faits
+
+```sql
+CREATE TABLE fact_ranking (
+    ranking_key INT AUTO_INCREMENT PRIMARY KEY,
+
+    -- Foreign keys vers les dimensions
+    boss_key INT NOT NULL,
+    spec_key INT NOT NULL,
+    player_key INT NOT NULL,
+    region_key INT NOT NULL,
+    time_key INT NOT NULL,
+    trinket_1_key INT,
+    trinket_2_key INT,
+
+    -- Mesures
+    player_rank INT NOT NULL,
+    amount DOUBLE NOT NULL,
+    duration INT NOT NULL,
+    ilvl INT,
+
+    -- Dimensions degenerees
+    report_code VARCHAR(50),
+    fight_id INT,
+
+    -- Cles etrangeres
+    FOREIGN KEY (boss_key) REFERENCES dim_boss(boss_key),
+    FOREIGN KEY (spec_key) REFERENCES dim_spec(spec_key),
+    FOREIGN KEY (player_key) REFERENCES dim_player(player_key),
+    FOREIGN KEY (region_key) REFERENCES dim_region(region_key),
+    FOREIGN KEY (time_key) REFERENCES dim_time(time_key),
+    FOREIGN KEY (trinket_1_key) REFERENCES dim_trinket(trinket_key),
+    FOREIGN KEY (trinket_2_key) REFERENCES dim_trinket(trinket_key),
+
+    -- Index pour requetes analytiques
+    INDEX idx_fact_boss (boss_key),
+    INDEX idx_fact_spec (spec_key),
+    INDEX idx_fact_time (time_key),
+    INDEX idx_fact_region (region_key)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+## Alimentation de la table de faits
+
+La table de faits est peuplee par une jointure entre la table plate `player_rankings` et toutes les dimensions pour recuperer les surrogate keys correspondantes.
+
+```sql
+-- ================================================
+-- REMPLISSAGE DE fact_ranking
+-- Jointure flat table → dimensions pour FK resolution
+-- ================================================
+
+INSERT INTO fact_ranking (
+    boss_key, spec_key, player_key, region_key, time_key,
+    trinket_1_key, trinket_2_key,
+    player_rank, amount, duration, ilvl,
+    report_code, fight_id
+)
+SELECT
+    db.boss_key,
+    ds.spec_key,
+    dp.player_key,
+    dr.region_key,
+    dt.time_key,
+    t1.trinket_key,
+    t2.trinket_key,
+    pr.player_rank,
+    pr.amount,
+    pr.duration,
+    pr.ilvl,
+    pr.report_code,
+    pr.fight_id
+FROM player_rankings pr
+-- Jointure dimensions
+JOIN dim_boss db
+    ON pr.boss = db.boss_name AND pr.raid = db.raid_name
+JOIN dim_spec ds
+    ON pr.class = ds.class_name
+    AND pr.spec = ds.spec_name
+    AND (pr.hero_spec = ds.hero_spec_name OR (pr.hero_spec IS NULL AND ds.hero_spec_name IS NULL))
+JOIN dim_player dp
+    ON pr.player_name = dp.player_name
+    AND (pr.guild_name = dp.guild_name OR (pr.guild_name IS NULL AND dp.guild_name IS NULL))
+JOIN dim_region dr
+    ON pr.region = dr.region_name
+JOIN dim_time dt
+    ON DATE(pr.scraped_at) = dt.scraped_date
+    AND HOUR(pr.scraped_at) = dt.hour
+-- Trinkets (LEFT JOIN car peuvent etre NULL)
+LEFT JOIN dim_trinket t1
+    ON pr.trinket_1_name = t1.trinket_name
+LEFT JOIN dim_trinket t2
+    ON pr.trinket_2_name = t2.trinket_name;
+```
+
+## Verification de l'integrite referentielle
+
+```sql
+-- Verifier que toutes les lignes ont ete migrees
+SELECT
+    (SELECT COUNT(*) FROM player_rankings) AS lignes_source,
+    (SELECT COUNT(*) FROM fact_ranking) AS lignes_fait,
+    (SELECT COUNT(*) FROM player_rankings) - (SELECT COUNT(*) FROM fact_ranking) AS ecart;
+
+-- Verifier qu'il n'y a pas de FK orphelines
+SELECT COUNT(*) AS orphelins_boss FROM fact_ranking f
+LEFT JOIN dim_boss d ON f.boss_key = d.boss_key WHERE d.boss_key IS NULL;
+
+SELECT COUNT(*) AS orphelins_spec FROM fact_ranking f
+LEFT JOIN dim_spec d ON f.spec_key = d.spec_key WHERE d.spec_key IS NULL;
+```
 
 ---
 
