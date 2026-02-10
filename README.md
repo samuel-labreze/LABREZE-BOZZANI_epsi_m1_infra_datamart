@@ -164,55 +164,49 @@ cursor.executemany("""
 ```mermaid
 erDiagram
     RAID ||--o{ BOSS : contient
+    BOSS }o--|| PLAYER_RANKING : "classe sur"
+    REGION }o--|| PLAYER_RANKING : localise
+    CLASS ||--o{ SPEC : possede
+    SPEC ||--o{ HERO_SPEC : evolue
+    CLASS }o--|| PLAYER_RANKING : joue
+    SPEC }o--|| PLAYER_RANKING : specialise
+    HERO_SPEC }o--|| PLAYER_RANKING : utilise
+    TRINKET }o--|| PLAYER_RANKING : equipe
+
     RAID {
         int raid_id PK
         varchar name
         int zone_id
     }
-
-    BOSS ||--o{ PLAYER_RANKING : classe
     BOSS {
         int boss_id PK
         varchar name
         int raid_id FK
     }
-
-    REGION ||--o{ PLAYER_RANKING : localise
     REGION {
         int region_id PK
         varchar name
     }
-
-    CLASS ||--o{ SPEC : possede
-    CLASS ||--o{ PLAYER_RANKING : joue
     CLASS {
         int class_id PK
         varchar name
     }
-
-    SPEC ||--o{ HERO_SPEC : evolue
-    SPEC ||--o{ PLAYER_RANKING : specialise
     SPEC {
         int spec_id PK
         varchar name
         int class_id FK
         varchar role
     }
-
-    HERO_SPEC ||--o{ PLAYER_RANKING : utilise
     HERO_SPEC {
         int hero_id PK
         varchar name
         int spec_id FK
     }
-
-    TRINKET ||--o{ PLAYER_RANKING : equipe
     TRINKET {
         int trinket_id PK
         varchar name
         int item_level
     }
-
     PLAYER_RANKING {
         int id PK
         int raid_id FK
@@ -400,80 +394,27 @@ Transformer la table plate `player_rankings` (Atelier 1) en un **schema en etoil
 > **Perimetre** : Difficulte Mythique uniquement (filtre fixe)
 
 ```mermaid
-erDiagram
-    fact_ranking }o--|| dim_boss : "boss_key"
-    fact_ranking }o--|| dim_spec : "spec_key"
-    fact_ranking }o--|| dim_player : "player_key"
-    fact_ranking }o--|| dim_region : "region_key"
-    fact_ranking }o--|| dim_time : "time_key"
-    fact_ranking }o--o| dim_trinket : "trinket_1_key"
-    fact_ranking }o--o| dim_trinket : "trinket_2_key"
+flowchart LR
+    B["<b>dim_boss</b><br/>─────────<br/>boss_key PK<br/>boss_name<br/>raid_name<br/>zone_id<br/>boss_order"] -->|boss_key| F
+    S["<b>dim_spec</b><br/>─────────<br/>spec_key PK<br/>class_name<br/>spec_name<br/>hero_spec_name<br/>role"] -->|spec_key| F
+    T["<b>dim_time</b><br/>─────────<br/>time_key PK<br/>scraped_date<br/>day_name<br/>is_weekend<br/>is_reset_day<br/>raid_week<br/>month / year"] -->|time_key| F
 
-    fact_ranking {
-        int ranking_key PK "Surrogate Key"
-        int boss_key FK
-        int spec_key FK
-        int player_key FK
-        int region_key FK
-        int time_key FK
-        int trinket_1_key FK
-        int trinket_2_key FK
-        int player_rank "Mesure - Rang"
-        double amount "Mesure - DPS"
-        int duration "Mesure - Duree (s)"
-        int ilvl "Mesure - Item Level"
-        varchar report_code "Dim degeneree"
-        int fight_id "Dim degeneree"
-    }
+    F["<b>fact_ranking</b><br/>═════════<br/>ranking_key PK<br/>─────────<br/>boss_key FK<br/>spec_key FK<br/>player_key FK<br/>region_key FK<br/>time_key FK<br/>trinket_1_key FK<br/>trinket_2_key FK<br/>─────────<br/><i>player_rank</i><br/><i>amount - DPS</i><br/><i>duration</i><br/><i>ilvl</i>"]
 
-    dim_boss {
-        int boss_key PK "Surrogate Key"
-        varchar boss_name
-        varchar raid_name "Denormalise Raid"
-        int zone_id
-        int boss_order
-    }
+    F -->|player_key| P["<b>dim_player</b><br/>─────────<br/>player_key PK<br/>player_name<br/>guild_name"]
+    F -->|region_key| R["<b>dim_region</b><br/>─────────<br/>region_key PK<br/>region_name<br/>region_code"]
+    F -->|"trinket_key x2"| TR["<b>dim_trinket</b><br/>─────────<br/>trinket_key PK<br/>trinket_name<br/><i>(role-playing dim)</i>"]
 
-    dim_spec {
-        int spec_key PK "Surrogate Key"
-        varchar class_name "Denormalise Class"
-        varchar spec_name
-        varchar hero_spec_name "Denormalise Hero"
-        varchar role "DPS - Healer - Tank"
-    }
-
-    dim_player {
-        int player_key PK "Surrogate Key"
-        varchar player_name
-        varchar guild_name
-    }
-
-    dim_region {
-        int region_key PK "Surrogate Key"
-        varchar region_name
-        varchar region_code
-    }
-
-    dim_time {
-        int time_key PK "Surrogate Key"
-        date scraped_date
-        int hour
-        int day_of_week
-        varchar day_name
-        boolean is_weekend
-        boolean is_reset_day "Mardi EU - Mercredi US"
-        int raid_week
-        int month
-        int year
-    }
-
-    dim_trinket {
-        int trinket_key PK "Surrogate Key"
-        varchar trinket_name
-    }
+    style F fill:#2c3e50,color:#fff,stroke:#fff,stroke-width:2px
+    style B fill:#3498db,color:#fff,stroke:#fff
+    style S fill:#e74c3c,color:#fff,stroke:#fff
+    style T fill:#f39c12,color:#fff,stroke:#fff
+    style P fill:#1abc9c,color:#fff,stroke:#fff
+    style R fill:#9b59b6,color:#fff,stroke:#fff
+    style TR fill:#e67e22,color:#fff,stroke:#fff
 ```
 
-> **Note** : `dim_trinket` est une **role-playing dimension** : la table de faits la reference deux fois (`trinket_1_key` et `trinket_2_key`) car chaque joueur equipe 2 trinkets.
+> **Note** : `dim_trinket` est une **role-playing dimension** : la table de faits la reference deux fois (`trinket_1_key` et `trinket_2_key`) car chaque joueur equipe 2 trinkets. Les colonnes en *italique* dans `fact_ranking` sont les **mesures**.
 
 ---
 
