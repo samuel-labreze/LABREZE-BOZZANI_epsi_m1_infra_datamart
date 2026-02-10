@@ -221,6 +221,138 @@ cursor.executemany("""
                              └──────────────────────────┘
 ```
 
+# ════════════════════════════════
+# ÉTAPE 3.5 - MODÈLE DIMENSIONNELLE
+# ════════════════════════════════
+
+# 🌟 Modèle Dimensionnel en Étoile — WoW Player Rankings
+
+## Description
+
+Ce document présente la modélisation dimensionnelle en étoile (Star Schema) pour un entrepôt de données (Data Warehouse) dédié au classement des joueurs World of Warcraft par boss de raid.
+
+---
+
+## Schéma en Étoile
+
+```
+════════════════════════════════════════════════════════════
+MODÈLE DIMENSIONNEL EN ÉTOILE (STAR SCHEMA)
+════════════════════════════════════════════════════════════
+
+                            ┌──────────────────────┐
+                            │      DIM_RAID         │
+                            ├──────────────────────┤
+                            │ raid_id (PK)          │
+                            │ raid_name             │
+                            │ zone                  │
+                            └──────────┬───────────┘
+                                       │
+    ┌──────────────────────┐           │           ┌──────────────────────┐
+    │     DIM_PLAYER       │           │           │      DIM_BOSS        │
+    ├──────────────────────┤           │           ├──────────────────────┤
+    │ player_id (PK)       │           │           │ boss_id (PK)         │
+    │ player_name          │           │           │ boss_name            │
+    │ guild_name           │           │           │ raid_name            │
+    └──────────┬───────────┘           │           └──────────┬───────────┘
+               │                       │                      │
+               │    ┌──────────────────┴──────────────────┐   │
+               │    │          FAIT_RANKING                │   │
+               │    ├─────────────────────────────────────┤   │
+               │    │ ranking_id (PK)                     │   │
+               ├───►│                                     │◄──┤
+               │    │ ── Clés étrangères ──               │   │
+               │    │ raid_id (FK)        ────────────────┼───┘
+               │    │ boss_id (FK)        ────────────────┘
+               │    │ region_id (FK)      ─────────────────────┐
+               │    │ spec_id (FK)        ──────────┐          │
+               └────┤ player_id (FK)                │          │
+                    │ trinket_1_id (FK)   ──────┐   │          │
+                    │ trinket_2_id (FK)   ──────┤   │          │
+                    │                           │   │          │
+                    │ ── Mesures ──             │   │          │
+                    │ player_rank               │   │          │
+                    │ dps_amount                │   │          │
+                    │ duration                  │   │          │
+                    │ ilvl                      │   │          │
+                    │ scraped_at                │   │          │
+                    └───────────────────────────┘   │          │
+                         │          │               │          │
+                         │          │               │          │
+    ┌────────────────────┘          │               │          └──────────────────────┐
+    │                               │               │                                 │
+    ▼                               │               ▼                                 ▼
+┌──────────────────────┐            │    ┌──────────────────────┐       ┌──────────────────────┐
+│     DIM_TRINKET      │            │    │      DIM_SPEC        │       │     DIM_REGION       │
+├──────────────────────┤            │    ├──────────────────────┤       ├──────────────────────┤
+│ trinket_id (PK)      │            │    │ spec_id (PK)         │       │ region_id (PK)       │
+│ trinket_name         │            │    │ class_name           │       │ region_name          │
+│ item_level           │            │    │ spec_name            │       └──────────────────────┘
+└──────────────────────┘            │    │ hero_spec_name       │
+  ▲ trinket_1 & trinket_2          │    │ role                 │
+                                    │    └──────────────────────┘
+                                    │      ▲ dénormalisée :
+                                    │        CLASS + SPEC + HERO_SPEC
+                                    │
+                                    └── (liens FK)
+```
+
+---
+
+## Tables
+
+### Table de faits
+
+| Table | Grain | Description |
+|-------|-------|-------------|
+| **FAIT_RANKING** | 1 ligne par performance joueur/boss | Stocke les métriques de classement DPS pour chaque encounter |
+
+#### Mesures
+
+| Colonne | Type | Description |
+|---------|------|-------------|
+| `player_rank` | INT | Rang du joueur sur le boss |
+| `dps_amount` | FLOAT | DPS réalisé |
+| `duration` | INT | Durée du combat (secondes) |
+| `ilvl` | INT | Niveau d'équipement du joueur |
+| `scraped_at` | TIMESTAMP | Date/heure du scraping |
+
+#### Clés étrangères
+
+| FK | Dimension cible |
+|----|-----------------|
+| `raid_id` | DIM_RAID |
+| `boss_id` | DIM_BOSS |
+| `region_id` | DIM_REGION |
+| `spec_id` | DIM_SPEC |
+| `player_id` | DIM_PLAYER |
+| `trinket_1_id` | DIM_TRINKET |
+| `trinket_2_id` | DIM_TRINKET |
+
+---
+
+### Tables de dimensions
+
+| Dimension | PK | Attributs | Description |
+|-----------|----|-----------|-------------|
+| **DIM_RAID** | `raid_id` | raid_name, zone | Instance de raid |
+| **DIM_BOSS** | `boss_id` | boss_name, raid_name | Boss d'un raid |
+| **DIM_REGION** | `region_id` | region_name | Région serveur (EU, US, etc.) |
+| **DIM_SPEC** | `spec_id` | class_name, spec_name, hero_spec_name, role | Spécialisation joueur (dénormalisée) |
+| **DIM_PLAYER** | `player_id` | player_name, guild_name | Joueur et sa guilde |
+| **DIM_TRINKET** | `trinket_id` | trinket_name, item_level | Bijou équipé |
+
+---
+
+## Notes de modélisation
+
+- **DIM_SPEC dénormalisée** : fusionne les tables `CLASS`, `SPEC` et `HERO_SPEC` du modèle relationnel en une seule dimension plate (principe du Star Schema — pas de flocon/snowflake)
+- **Role-playing dimension** : `DIM_TRINKET` est référencée deux fois par la table de faits via `trinket_1_id` et `trinket_2_id`
+- **DIM_PLAYER** : extraite pour isoler les attributs descriptifs du joueur (nom, guilde) des mesures de performance
+- **Grain** : une ligne = une performance d'un joueur sur un boss spécifique, à un moment donné (`scraped_at`)
+
+## Modele Conceptuel de Donnees (MCD)
+
 ## Schema physique (Implementation)
 
 > **Note** : Pour des raisons de performance et de simplicite, nous avons opte pour un modele **denormalise** (flat table). Cette approche est courante en Business Intelligence pour les data marts analytiques.
@@ -458,6 +590,7 @@ rendu_tp/
 Projet academique - EPSI 2026
 
 Donnees issues de WarcraftLogs (https://www.warcraftlogs.com) - Usage educatif uniquement.
+
 
 
 
