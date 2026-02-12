@@ -3,7 +3,7 @@ global:
   min_interval: 60s
 
 target:
-  data_source_name: "mysql://scrapper:TGByhn123%21@mariadb:3306/datamart-wow"
+  data_source_name: "mysql://scrapper:[PASSWORD]@mariadb:3306/datamart-wow"
   collectors:
     - wow_global_stats
     - wow_avg_dps_by_class
@@ -461,3 +461,4 @@ collectors:
           WHERE player_rank <= 500
             AND scraped_at > NOW() - INTERVAL 24 HOUR
           GROUP BY class
+
