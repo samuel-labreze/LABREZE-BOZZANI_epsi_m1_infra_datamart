@@ -3,7 +3,7 @@ global:
   min_interval: 60s
 
 target:
-  data_source_name: "mysql://scrapper:[VOTRE_MOT_DE_PASSE_SCRAPPER_URL_ENCODED]@mariadb:3306/datamart-wow"
+  data_source_name: "mysql://scrapper:TGByhn123%21@mariadb:3306/datamart-wow"
   collectors:
     - wow_global_stats
     - wow_avg_dps_by_class

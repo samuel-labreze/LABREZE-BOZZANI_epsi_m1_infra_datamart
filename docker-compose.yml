@@ -1,5 +1,4 @@
 version: '3.8'
-
 services:
   # ===========================================
   # BASE DE DONNEES MARIADB
@@ -9,10 +8,10 @@ services:
     container_name: wow-mariadb
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: [VOTRE_MOT_DE_PASSE_ROOT]
+      MYSQL_ROOT_PASSWORD: TGByhn123!
       MYSQL_DATABASE: datamart-wow
       MYSQL_USER: scrapper
-      MYSQL_PASSWORD: [VOTRE_MOT_DE_PASSE_SCRAPPER]
+      MYSQL_PASSWORD: TGByhn123!
     volumes:
       - mariadb_data:/var/lib/mysql
       - ./app/init_db.sql:/docker-entrypoint-initdb.d/init.sql:ro
@@ -20,13 +19,6 @@ services:
       - "3306:3306"
     networks:
       - wow-network
-    healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
-      interval: 5s
-      timeout: 5s
-      retries: 20
-      start_period: 30s
-
   # ===========================================
   # SCRAPER PYTHON (WarcraftLogs API)
   # ===========================================
@@ -40,19 +32,17 @@ services:
       DB_HOST: mariadb
       DB_PORT: 3306
       DB_USER: scrapper
-      DB_PASSWORD: [VOTRE_MOT_DE_PASSE_SCRAPPER]
+      DB_PASSWORD: TGByhn123!
       DB_NAME: datamart-wow
-      WCL_CLIENT_ID: [VOTRE_WCL_CLIENT_ID]
-      WCL_CLIENT_SECRET: [VOTRE_WCL_CLIENT_SECRET]
+      WCL_CLIENT_ID: a0e1dd3c-11ef-4fb4-8c64-2c7038b36c80
+      WCL_CLIENT_SECRET: iFxS1AHSOUu5G4GeSwBcmMFqBOUez61xPKyUCMdl
     volumes:
       - scraper_logs:/app/logs
     depends_on:
-      mariadb:
-        condition: service_healthy
+      - mariadb
     networks:
       - wow-network
     command: ["python", "run_all.py"]
-
   # ===========================================
   # SQL EXPORTER (MariaDB -> Prometheus)
   # ===========================================
@@ -67,11 +57,9 @@ services:
     command:
       - "--config.file=/etc/sql_exporter/sql_exporter.yml"
     depends_on:
-      mariadb:
-        condition: service_healthy
+      - mariadb
     networks:
       - wow-network
-
   # ===========================================
   # PROMETHEUS (Collecte des metriques)
   # ===========================================
@@ -93,7 +81,6 @@ services:
       - sql-exporter
     networks:
       - wow-network
-
   # ===========================================
   # GRAFANA (Visualisation)
   # ===========================================
@@ -105,7 +92,7 @@ services:
       - "3000:3000"
     environment:
       GF_SECURITY_ADMIN_USER: admin
-      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_SECURITY_ADMIN_PASSWORD: TGByhn123!
       GF_USERS_ALLOW_SIGN_UP: "false"
     volumes:
       - grafana_data:/var/lib/grafana
@@ -113,9 +100,63 @@ services:
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
     depends_on:
       - prometheus
+      - loki
     networks:
       - wow-network
-
+  # ===========================================
+  # LOKI (Agregation de logs)
+  # ===========================================
+  loki:
+    image: grafana/loki:3.4.2
+    container_name: wow-loki
+    restart: unless-stopped
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki/loki-config.yml:/etc/loki/local-config.yaml:ro
+      - loki_data:/loki
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - wow-network
+  # ===========================================
+  # PROMTAIL (Collecte de logs -> Loki)
+  # ===========================================
+  promtail:
+    image: grafana/promtail:3.4.2
+    container_name: wow-promtail
+    restart: unless-stopped
+    volumes:
+      - ./promtail/promtail-config.yml:/etc/promtail/config.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/log:/var/log:ro
+      - scraper_logs:/scraper-logs:ro
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
+    networks:
+      - wow-network
+  # ===========================================
+  # CADVISOR (Metriques conteneurs)
+  # ===========================================
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.51.0
+    container_name: wow-cadvisor
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    privileged: true
+    command:
+      - '--docker_only=true'
+      - '--housekeeping_interval=15s'
+      - '--store_container_labels=true'
+    networks:
+      - wow-network
 # ===========================================
 # VOLUMES PERSISTANTS
 # ===========================================
@@ -123,8 +164,8 @@ volumes:
   mariadb_data:
   prometheus_data:
   grafana_data:
+  loki_data:
   scraper_logs:
-
 # ===========================================
 # RESEAU INTERNE
 # ===========================================

@@ -19,3 +19,14 @@ scrape_configs:
   - job_name: 'prometheus'
     static_configs:
       - targets: ['localhost:9090']
+
+  # cAdvisor - Metriques conteneurs Docker
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+    scrape_interval: 15s
+
+  # Loki - Metriques internes
+  - job_name: 'loki'
+    static_configs:
+      - targets: ['loki:3100']

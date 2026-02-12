@@ -163,20 +163,25 @@ cursor.executemany("""
 
 ```mermaid
 flowchart LR
-    RAID["<b>RAID</b><br/>─────────<br/>raid_id PK<br/>name<br/>zone_id"] -->|"1:N"| BOSS
+    RAID["<b>RAID</b><br/>─────────<br/>raid_id PK<br/>name<br/>expansion"] -->|"1:N"| BOSS
     BOSS["<b>BOSS</b><br/>─────────<br/>boss_id PK<br/>name<br/>raid_id FK"] -->|"1:N"| PR
+    
     CLASS["<b>CLASS</b><br/>─────────<br/>class_id PK<br/>name"] -->|"1:N"| SPEC
     SPEC["<b>SPEC</b><br/>─────────<br/>spec_id PK<br/>name<br/>class_id FK<br/>role"] -->|"1:N"| HERO
-    HERO["<b>HERO_SPEC</b><br/>─────────<br/>hero_id PK<br/>name<br/>spec_id FK"] -->|"1:N"| PR
+    HERO["<b>HERO_SPEC</b><br/>─────────<br/>hero_spec_id PK<br/>name<br/>spec_id FK"] -->|"1:N"| PR
 
-    CLASS -->|"1:N"| PR
-    SPEC -->|"1:N"| PR
     REGION["<b>REGION</b><br/>─────────<br/>region_id PK<br/>name"] -->|"1:N"| PR
-    TRINKET["<b>TRINKET</b><br/>─────────<br/>trinket_id PK<br/>name<br/>item_level"] -->|"1:N (x2)"| PR
 
-    PR["<b>PLAYER_RANKING</b><br/>═════════<br/>id PK<br/>─────────<br/>raid_id FK<br/>boss_id FK<br/>region_id FK<br/>class_id FK<br/>spec_id FK<br/>hero_spec_id FK<br/>trinket_1 FK<br/>trinket_2 FK<br/>─────────<br/>player_name<br/>guild_name<br/><i>player_rank</i><br/><i>amount - DPS</i><br/><i>duration</i><br/><i>ilvl</i><br/>scraped_at"]
+--
+    PR -->|"1:N"| LINK_TRINKET
+    TRINKET["<b>TRINKET</b><br/>─────────<br/>trinket_id PK<br/>name<br/>item_level"] -->|"1:N"| LINK_TRINKET
+
+    LINK_TRINKET["<b>PR_TRINKET</b><br/>(Table de Liaison)<br/>═════════<br/>ranking_id PK,FK<br/>trinket_id PK,FK<br/>─────────<br/>slot (1 ou 2)"]
+
+    PR["<b>PLAYER_RANKING</b><br/>═════════<br/>id PK<br/>─────────<br/>boss_id FK<br/>region_id FK<br/>hero_spec_id FK<br/>─────────<br/>player_name<br/>guild_name<br/><i>player_rank</i><br/><i>dps_amount</i><br/><i>duration</i><br/><i>ilvl</i><br/>scraped_at"]
 
     style PR fill:#2c3e50,color:#fff,stroke:#fff,stroke-width:2px
+    style LINK_TRINKET fill:#34495e,color:#fff,stroke:#fff,stroke-dasharray: 5 5
     style RAID fill:#3498db,color:#fff,stroke:#fff
     style BOSS fill:#2980b9,color:#fff,stroke:#fff
     style CLASS fill:#e74c3c,color:#fff,stroke:#fff
@@ -846,3 +851,138 @@ rendu_tp/
 Projet academique - EPSI 2026
 
 Donnees issues de WarcraftLogs (https://www.warcraftlogs.com) - Usage educatif uniquement.
+
+---
+
+# ╔══════════════════════════════════════════╗
+# ║           ATELIER 3                      ║
+# ╚══════════════════════════════════════════╝
+
+# ════════════════════════════════
+# ÉTAPE 1 - DÉPLOIEMENT DE L'OUTIL DE BI
+# ════════════════════════════════
+
+## Outil de visualisation : Grafana
+
+Nous avons integre **Grafana** comme solution centrale de Business Intelligence et de Monitoring.
+
+### Architecture d'integration
+
+- **Connexion Data Warehouse** : Grafana se connecte a la base de donnees via **Prometheus** (qui collecte les metriques exposees par `sql-exporter` depuis MariaDB).
+- **Connexion Logs** : Grafana se connecte a **Loki** pour l'agregation des logs centralises.
+- **Demarrage** : Le service demarre automatiquement via `docker-compose` sur le port `3000`.
+
+---
+
+# ════════════════════════════════
+# ÉTAPE 2 - INDICATEURS CLÉS (KPIs)
+# ════════════════════════════════
+
+## Indicateurs definis (5 KPIs)
+
+### 1. Agregations Simples
+
+| Indicateur | Type | Visualisation | Description |
+|------------|------|---------------|-------------|
+| **Total Joueurs** | Agregation | Stat Panel | Nombre total de profils uniques collectes sur la periode (24h) |
+| **iLvl Moyen** | Agregation | Gauge | Niveau d'objet moyen global des joueurs du Top 500 |
+
+### 2. Mesures Croisees
+
+| Indicateur | Axes | Visualisation | Description |
+|------------|------|---------------|-------------|
+| **DPS par Classe** | DPS x Classe | Bar Chart | Performance moyenne de chaque classe triee par ordre decroissant |
+| **Repartition Region** | Joueurs x Region | Pie Chart | Proportion des joueurs provenant des serveurs EU vs US |
+| **Meta Trinkets** | Usage x Item | Bar Chart | Les 20 bijoux (trinkets) les plus equipes par les meilleurs joueurs |
+
+> Ces indicateurs sont visibles sur le dashboard **Global Overview** (`grafana-dashboard-wow-v3.json`).
+
+---
+
+# ════════════════════════════════
+# ÉTAPE 3 - CENTRALISATION DES LOGS & MONITORING
+# ════════════════════════════════
+
+## Architecture de Monitoring (Stack LGTM simplifiee)
+
+Nous avons remplace l'approche basique (Dozzle) par une stack de monitoring complete et persistante :
+
+```mermaid
+flowchart LR
+    C["<b>Conteneurs</b><br/>(App, DB, Scraper)"] -->|"stdout/stderr"| D[Docker Socket]
+    D -->|"Volume Mount"| P["<b>Promtail</b><br/>(Log Collector)"]
+    P -->|"Push HTTP"| L["<b>Loki</b><br/>(Log Aggregator)"]
+    L -->|"Query (LogQL)"| G["<b>Grafana</b><br/>(Interface Unique)"]
+    
+    C -->|"Metrics"| CA["<b>cAdvisor</b><br/>(Container Metrics)"]
+    CA -->|"Scrape"| PR["<b>Prometheus</b>"]
+    PR -->|"Query (PromQL)"| G
+```
+
+### Services deployes
+
+1.  **Loki** : Base de donnees orientee logs (indexation legere).
+2.  **Promtail** : Agent qui "tail" les logs des conteneurs Docker et les envoie a Loki.
+3.  **cAdvisor** : Collecte les metriques CPU/RAM/Reseau des conteneurs en temps reel.
+4.  **Grafana** : Affiche les logs et les metriques sur un meme dashboard.
+
+### Dashboard de Monitoring
+
+Un dashboard unifie permet de surveiller la sante de l'infrastructure :
+- **Metriques** : CPU, RAM, I/O Reseau par conteneur (via cAdvisor).
+- **Logs** : Explorateur de logs centralise avec filtres (via Loki).
+
+![Dashboard Monitoring](screenshots/dashboard-monitoring.png)
+
+### Simulation d'erreur (Exemple)
+
+Pour valider la remontee des erreurs, nous pouvons simuler une panne de connexion DB dans le scraper.
+*Visualisation dans Grafana (Explore > Loki)* :
+```log
+{container="wow-scraper"} |= "error"
+```
+> **Resultat** : `pymysql.err.OperationalError: (2003, "Can't connect to MySQL server on 'mariadb' (111)")`
+
+---
+
+# ════════════════════════════════
+# ÉTAPE 4 - DOCUMENTATION
+# ════════════════════════════════
+
+## Procedure d'installation et de lancement
+
+### 1. Prerequis
+- Docker Engine 20.10+
+- Docker Compose 1.29+
+- 4 Go de RAM disponibles (pour la stack complete)
+
+### 2. Configuration
+Creer un fichier `.env` a la racine (voir `.env.example`) :
+```ini
+MYSQL_ROOT_PASSWORD=secret
+WCL_CLIENT_ID=votre_client_id
+WCL_CLIENT_SECRET=votre_client_secret
+```
+
+### 3. Lancement
+```bash
+# Demarrer toute la stack en arriere-plan
+docker-compose up -d
+
+# Verifier l'etat des services
+docker-compose ps
+```
+
+### 4. Acces aux interfaces
+- **Grafana (BI & Logs)** : http://localhost:3000 (admin/admin)
+- **Prometheus** : http://localhost:9090
+- **cAdvisor** : http://localhost:8080
+
+### 5. Ajout d'un nouveau service
+Pour ajouter un service a monitorer (ex: un cache Redis) :
+1.  Ajouter le service dans `docker-compose.yml`.
+2.  Ajouter le reseau `wow-network`.
+3.  **Logs** : Automatiquement collectes par Promtail (via le socket Docker).
+4.  **Metriques** : Automatiquement collectees par cAdvisor.
+5.  Redemarrer : `docker-compose up -d`.
+
