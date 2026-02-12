@@ -172,7 +172,7 @@ flowchart LR
 
     REGION["<b>REGION</b><br/>─────────<br/>region_id PK<br/>name"] -->|"1:N"| PR
 
---
+    %% -- La correction majeure est ici (Table de liaison) --
     PR -->|"1:N"| LINK_TRINKET
     TRINKET["<b>TRINKET</b><br/>─────────<br/>trinket_id PK<br/>name<br/>item_level"] -->|"1:N"| LINK_TRINKET
 
@@ -180,6 +180,7 @@ flowchart LR
 
     PR["<b>PLAYER_RANKING</b><br/>═════════<br/>id PK<br/>─────────<br/>boss_id FK<br/>region_id FK<br/>hero_spec_id FK<br/>─────────<br/>player_name<br/>guild_name<br/><i>player_rank</i><br/><i>dps_amount</i><br/><i>duration</i><br/><i>ilvl</i><br/>scraped_at"]
 
+    %% Styles identiques à ton original
     style PR fill:#2c3e50,color:#fff,stroke:#fff,stroke-width:2px
     style LINK_TRINKET fill:#34495e,color:#fff,stroke:#fff,stroke-dasharray: 5 5
     style RAID fill:#3498db,color:#fff,stroke:#fff
@@ -985,4 +986,5 @@ Pour ajouter un service a monitorer (ex: un cache Redis) :
 3.  **Logs** : Automatiquement collectes par Promtail (via le socket Docker).
 4.  **Metriques** : Automatiquement collectees par cAdvisor.
 5.  Redemarrer : `docker-compose up -d`.
+
 
