@@ -15,9 +15,9 @@ Entrepot de donnees decisionnel pour l'analyse des performances des meilleurs jo
 
 ---
 
-# ╔═══════════════════════════════════╗
-# ║           ATELIER 1               ║
-# ╚═══════════════════════════════════╝
+# ╔══════════════════════════════════╗
+#            ATELIER 1               
+# ╚══════════════════════════════════╝
 
 # ════════════════════════════════
 # ÉTAPE 1 - JEU DE DONNÉES
@@ -986,6 +986,7 @@ Pour ajouter un service a monitorer (ex: un cache Redis) :
 3.  **Logs** : Automatiquement collectes par Promtail (via le socket Docker).
 4.  **Metriques** : Automatiquement collectees par cAdvisor.
 5.  Redemarrer : `docker-compose up -d`.
+
 
 
 
